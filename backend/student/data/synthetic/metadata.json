@@ -1,0 +1,7 @@
+{
+  "generated_at": "2025-12-09T15:33:16.572505",
+  "num_students": 500,
+  "num_internships": 200,
+  "num_matches": 100000,
+  "train_split": 0.8
+}

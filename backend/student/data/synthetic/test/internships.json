@@ -1,0 +1,1800 @@
+[
+  {
+    "id": "e1e12220-891a-4a0b-abb5-83615f93a217",
+    "title": "Healthcare Analytics Intern",
+    "company": "Microsoft India",
+    "company_type": "tech_giants",
+    "description": "Looking for Healthcare Analytics Intern to join our team. Work on Medical Writing, Clinical Research projects.",
+    "location": "Lucknow, Uttar Pradesh",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.9462,
+        26.8467
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 29000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Medical Writing",
+      "Clinical Research",
+      "Biotechnology"
+    ],
+    "requirements": [
+      "Knowledge of Medical Writing, Clinical Research",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on healthcare projects",
+      "Collaborate with team"
+    ],
+    "category": "Healthcare",
+    "sector": "healthcare",
+    "positions_available": 2,
+    "application_deadline": "2026-01-03T15:27:18.501256",
+    "start_date": "2026-01-10T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "015bb11e-82cc-4d79-a01e-39b50a12ae39",
+    "title": "Product Management Intern",
+    "company": "Deloitte India",
+    "company_type": "consulting",
+    "description": "Looking for Product Management Intern to join our team. Work on Marketing, SEO projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 31000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "Marketing",
+      "SEO",
+      "Tally",
+      "Social Media Marketing",
+      "PowerPoint"
+    ],
+    "requirements": [
+      "Knowledge of Marketing, SEO",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 1,
+    "application_deadline": "2026-01-09T15:27:18.484993",
+    "start_date": "2026-01-16T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "a4151bce-80bb-412e-838a-b9bd5c773dbb",
+    "title": "Backend Developer Intern",
+    "company": "Wipro",
+    "company_type": "indian_it",
+    "description": "Looking for Backend Developer Intern to join our team. Work on C#, AWS projects.",
+    "location": "Bangalore, Karnataka",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.5946,
+        12.9716
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 8000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "C#",
+      "AWS",
+      "Node.js"
+    ],
+    "requirements": [
+      "Knowledge of C#, AWS",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2025-12-23T15:27:18.496817",
+    "start_date": "2025-12-30T15:27:18.496817",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "fcdf568e-d949-4ff8-a11e-e58a93e84c0c",
+    "title": "Backend Developer Intern",
+    "company": "Amazon India",
+    "company_type": "tech_giants",
+    "description": "Looking for Backend Developer Intern to join our team. Work on Data Science, Kotlin projects.",
+    "location": "Ahmedabad, Gujarat",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.5714,
+        23.0225
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 41000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Data Science",
+      "Kotlin",
+      "HTML",
+      "Microservices"
+    ],
+    "requirements": [
+      "Knowledge of Data Science, Kotlin",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-01T15:27:18.501256",
+    "start_date": "2026-01-08T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "1e3ef84d-44fd-423a-a080-eff625a93398",
+    "title": "Marketing Intern",
+    "company": "TCS",
+    "company_type": "indian_it",
+    "description": "Looking for Marketing Intern to join our team. Work on Accounting, Project Management projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 20000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Accounting",
+      "Project Management",
+      "SEO"
+    ],
+    "requirements": [
+      "Knowledge of Accounting, Project Management",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 2,
+    "application_deadline": "2025-12-19T15:27:18.501256",
+    "start_date": "2025-12-26T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "e79aa4b5-4917-4506-8bb4-42f0468848d6",
+    "title": "Software Development Intern",
+    "company": "Meta India",
+    "company_type": "tech_giants",
+    "description": "Looking for Software Development Intern to join our team. Work on Vue.js, JavaScript projects.",
+    "location": "Ahmedabad, Gujarat",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.5714,
+        23.0225
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 56000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Vue.js",
+      "JavaScript",
+      "React Native",
+      "C++"
+    ],
+    "requirements": [
+      "Knowledge of Vue.js, JavaScript",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-20T15:27:18.495094",
+    "start_date": "2026-01-27T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "9ed16f49-db68-41e2-8703-8083d5707ee0",
+    "title": "Business Analyst Intern",
+    "company": "Tech Mahindra",
+    "company_type": "indian_it",
+    "description": "Looking for Business Analyst Intern to join our team. Work on Brand Management, Agile projects.",
+    "location": "Lucknow, Uttar Pradesh",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.9462,
+        26.8467
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 17000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Brand Management",
+      "Agile",
+      "GST",
+      "Accounting",
+      "SEO"
+    ],
+    "requirements": [
+      "Knowledge of Brand Management, Agile",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2026-01-26T15:27:18.495094",
+    "start_date": "2026-02-02T15:27:18.495094",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "b616e936-1196-4490-aad5-eea8804151bb",
+    "title": "Software Development Intern",
+    "company": "Zomato",
+    "company_type": "startups",
+    "description": "Looking for Software Development Intern to join our team. Work on Swift, Deep Learning projects.",
+    "location": "Lucknow, Uttar Pradesh",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.9462,
+        26.8467
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 28000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "Swift",
+      "Deep Learning",
+      "Kubernetes",
+      "React Native"
+    ],
+    "requirements": [
+      "Knowledge of Swift, Deep Learning",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 1,
+    "application_deadline": "2025-12-28T15:27:18.495094",
+    "start_date": "2026-01-04T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "9da200c1-5326-4cee-8b6b-e53632dc26dd",
+    "title": "Civil Engineering Intern",
+    "company": "EY India",
+    "company_type": "consulting",
+    "description": "Looking for Civil Engineering Intern to join our team. Work on Embedded Systems, Electrical Engineering projects.",
+    "location": "Kolkata, West Bengal",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        88.3639,
+        22.5726
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 36000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Embedded Systems",
+      "Electrical Engineering",
+      "Civil Engineering"
+    ],
+    "requirements": [
+      "Knowledge of Embedded Systems, Electrical Engineering",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on engineering projects",
+      "Collaborate with team"
+    ],
+    "category": "Engineering",
+    "sector": "engineering",
+    "positions_available": 2,
+    "application_deadline": "2026-01-28T15:27:18.496817",
+    "start_date": "2026-02-04T15:27:18.496817",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "cb3edce2-784d-4579-b3d6-3015f43a2f3f",
+    "title": "Full Stack Developer Intern",
+    "company": "Accenture India",
+    "company_type": "consulting",
+    "description": "Looking for Full Stack Developer Intern to join our team. Work on Flutter, PyTorch projects.",
+    "location": "Ahmedabad, Gujarat",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.5714,
+        23.0225
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 47000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Flutter",
+      "PyTorch",
+      "C#"
+    ],
+    "requirements": [
+      "Knowledge of Flutter, PyTorch",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 3,
+    "application_deadline": "2025-12-19T15:27:18.484993",
+    "start_date": "2025-12-26T15:27:18.484993",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "8376bc5a-cde9-4367-a5b5-49c8d8d81d4a",
+    "title": "Backend Developer Intern",
+    "company": "HCL Technologies",
+    "company_type": "indian_it",
+    "description": "Looking for Backend Developer Intern to join our team. Work on iOS, C++ projects.",
+    "location": "Delhi, Delhi",
+    "city": "Delhi",
+    "state": "Delhi",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.209,
+        28.6139
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 22000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "iOS",
+      "C++",
+      "Kotlin"
+    ],
+    "requirements": [
+      "Knowledge of iOS, C++",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 4,
+    "application_deadline": "2025-12-23T15:27:18.501256",
+    "start_date": "2025-12-30T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "9f0ed686-9a4b-4043-9ced-0a63474be613",
+    "title": "Full Stack Developer Intern",
+    "company": "Flipkart",
+    "company_type": "startups",
+    "description": "Looking for Full Stack Developer Intern to join our team. Work on iOS, Git projects.",
+    "location": "Bangalore, Karnataka",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.5946,
+        12.9716
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 13000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "iOS",
+      "Git",
+      ".NET"
+    ],
+    "requirements": [
+      "Knowledge of iOS, Git",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 3,
+    "application_deadline": "2026-01-23T15:27:18.484993",
+    "start_date": "2026-01-30T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "fa2a251c-d2fe-4e6f-a083-110eb6469bdc",
+    "title": "Civil Engineering Intern",
+    "company": "ICICI Bank",
+    "company_type": "finance",
+    "description": "Looking for Civil Engineering Intern to join our team. Work on Embedded Systems, CAD/CAM projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 28000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "Embedded Systems",
+      "CAD/CAM",
+      "Civil Engineering",
+      "Electrical Engineering",
+      "Quality Control"
+    ],
+    "requirements": [
+      "Knowledge of Embedded Systems, CAD/CAM",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on engineering projects",
+      "Collaborate with team"
+    ],
+    "category": "Engineering",
+    "sector": "engineering",
+    "positions_available": 5,
+    "application_deadline": "2026-01-18T15:27:18.495094",
+    "start_date": "2026-01-25T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "4ca9b773-0695-4f82-a41a-2ff06085cd78",
+    "title": "Full Stack Developer Intern",
+    "company": "Goldman Sachs India",
+    "company_type": "finance",
+    "description": "Looking for Full Stack Developer Intern to join our team. Work on Deep Learning, REST API projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 26000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Deep Learning",
+      "REST API",
+      "Swift",
+      "Docker",
+      "Kubernetes"
+    ],
+    "requirements": [
+      "Knowledge of Deep Learning, REST API",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 1,
+    "application_deadline": "2026-01-13T15:27:18.496817",
+    "start_date": "2026-01-20T15:27:18.496817",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "046eee1d-825f-49ec-97ff-8bce607889ef",
+    "title": "Data Science Engineering Intern",
+    "company": "Zerodha",
+    "company_type": "startups",
+    "description": "Looking for Data Science Engineering Intern to join our team. Work on Data Science, Swift projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 21000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Data Science",
+      "Swift",
+      "PyTorch",
+      "REST API",
+      "Flutter"
+    ],
+    "requirements": [
+      "Knowledge of Data Science, Swift",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 4,
+    "application_deadline": "2026-01-14T15:27:18.501256",
+    "start_date": "2026-01-21T15:27:18.501256",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "fe5dd94a-e86a-488f-b281-bb118306bcad",
+    "title": "Business Development Intern",
+    "company": "Infosys",
+    "company_type": "indian_it",
+    "description": "Looking for Business Development Intern to join our team. Work on Content Writing, SEM projects.",
+    "location": "Hyderabad, Telangana",
+    "city": "Hyderabad",
+    "state": "Telangana",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        78.4867,
+        17.385
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 14000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "Content Writing",
+      "SEM",
+      "PowerPoint",
+      "Excel",
+      "Market Research"
+    ],
+    "requirements": [
+      "Knowledge of Content Writing, SEM",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 1,
+    "application_deadline": "2026-01-24T15:27:18.495094",
+    "start_date": "2026-01-31T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "31766667-1d21-4808-a4f0-7c834601ad69",
+    "title": "Product Management Intern",
+    "company": "HDFC Bank",
+    "company_type": "finance",
+    "description": "Looking for Product Management Intern to join our team. Work on SEM, Social Media Marketing projects.",
+    "location": "Lucknow, Uttar Pradesh",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.9462,
+        26.8467
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 19000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "SEM",
+      "Social Media Marketing",
+      "Excel",
+      "Brand Management",
+      "Agile"
+    ],
+    "requirements": [
+      "Knowledge of SEM, Social Media Marketing",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 4,
+    "application_deadline": "2026-01-13T15:27:18.495094",
+    "start_date": "2026-01-20T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "bc9a16f4-d9e1-45ec-b15f-3348194ecb7c",
+    "title": "AWS Developer Intern",
+    "company": "KPMG India",
+    "company_type": "consulting",
+    "description": "Looking for AWS Developer Intern to join our team. Work on AWS, Docker projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 46000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "AWS",
+      "Docker",
+      "C#"
+    ],
+    "requirements": [
+      "Knowledge of AWS, Docker",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 4,
+    "application_deadline": "2025-12-26T15:27:18.501256",
+    "start_date": "2026-01-02T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "19e6d31a-198e-496a-8f22-d582e579c9db",
+    "title": "Business Development Intern",
+    "company": "Accenture India",
+    "company_type": "consulting",
+    "description": "Looking for Business Development Intern to join our team. Work on SEO, Account Management projects.",
+    "location": "Bangalore, Karnataka",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.5946,
+        12.9716
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 26000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "SEO",
+      "Account Management",
+      "Accounting"
+    ],
+    "requirements": [
+      "Knowledge of SEO, Account Management",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2026-01-02T15:27:18.501256",
+    "start_date": "2026-01-09T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "ab1c4d31-9e10-4334-b1f3-c25c0fb6ed62",
+    "title": "Sales Intern",
+    "company": "TCS",
+    "company_type": "indian_it",
+    "description": "Looking for Sales Intern to join our team. Work on Account Management, Content Writing projects.",
+    "location": "Gurgaon, Haryana",
+    "city": "Gurgaon",
+    "state": "Haryana",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.0266,
+        28.4595
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 9000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Account Management",
+      "Content Writing",
+      "Market Research",
+      "Tally"
+    ],
+    "requirements": [
+      "Knowledge of Account Management, Content Writing",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 4,
+    "application_deadline": "2026-01-13T15:27:18.484993",
+    "start_date": "2026-01-20T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "eda46a36-309b-4a89-ae6b-bd0ca3b7dbd6",
+    "title": "Business Development Intern",
+    "company": "HDFC Bank",
+    "company_type": "finance",
+    "description": "Looking for Business Development Intern to join our team. Work on Sales, Accounting projects.",
+    "location": "Lucknow, Uttar Pradesh",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.9462,
+        26.8467
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 43000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Sales",
+      "Accounting",
+      "Project Management",
+      "Market Research"
+    ],
+    "requirements": [
+      "Knowledge of Sales, Accounting",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 2,
+    "application_deadline": "2026-01-04T15:27:18.484993",
+    "start_date": "2026-01-11T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "2da848dc-d04c-4c3b-a3ef-389e7b7f3640",
+    "title": "Digital Marketing Intern",
+    "company": "JP Morgan India",
+    "company_type": "finance",
+    "description": "Looking for Digital Marketing Intern to join our team. Work on Business Analysis, Digital Marketing projects.",
+    "location": "Jaipur, Rajasthan",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        75.7873,
+        26.9124
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 32000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Business Analysis",
+      "Digital Marketing",
+      "Social Media Marketing"
+    ],
+    "requirements": [
+      "Knowledge of Business Analysis, Digital Marketing",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 4,
+    "application_deadline": "2026-01-23T15:27:18.496817",
+    "start_date": "2026-01-30T15:27:18.496817",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "768bafbc-8e29-4aa1-9df9-a38ba470ae87",
+    "title": "Electronics Intern",
+    "company": "Goldman Sachs India",
+    "company_type": "finance",
+    "description": "Looking for Electronics Intern to join our team. Work on Mechanical Engineering, Robotics projects.",
+    "location": "Chandigarh, Chandigarh",
+    "city": "Chandigarh",
+    "state": "Chandigarh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        76.7794,
+        30.7333
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 29000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "Mechanical Engineering",
+      "Robotics",
+      "VLSI",
+      "Quality Control"
+    ],
+    "requirements": [
+      "Knowledge of Mechanical Engineering, Robotics",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on engineering projects",
+      "Collaborate with team"
+    ],
+    "category": "Engineering",
+    "sector": "engineering",
+    "positions_available": 5,
+    "application_deadline": "2026-01-23T15:27:18.493009",
+    "start_date": "2026-01-30T15:27:18.493009",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.493009"
+  },
+  {
+    "id": "23bf316d-8bd6-4f27-bae7-5eb69b346147",
+    "title": "Digital Marketing Intern",
+    "company": "Infosys",
+    "company_type": "indian_it",
+    "description": "Looking for Digital Marketing Intern to join our team. Work on Content Writing, Agile projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 17000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Content Writing",
+      "Agile",
+      "SEM",
+      "Financial Analysis"
+    ],
+    "requirements": [
+      "Knowledge of Content Writing, Agile",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 3,
+    "application_deadline": "2026-01-29T15:27:18.493982",
+    "start_date": "2026-02-05T15:27:18.493982",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.493982"
+  },
+  {
+    "id": "0824eff2-b435-4a29-9a27-e9f3a1aeaefd",
+    "title": "Machine Learning Intern",
+    "company": "Zomato",
+    "company_type": "startups",
+    "description": "Looking for Machine Learning Intern to join our team. Work on AI, iOS projects.",
+    "location": "Delhi, Delhi",
+    "city": "Delhi",
+    "state": "Delhi",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.209,
+        28.6139
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 29000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "AI",
+      "iOS",
+      "Flutter",
+      "SQL",
+      "React Native"
+    ],
+    "requirements": [
+      "Knowledge of AI, iOS",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-06T15:27:18.484993",
+    "start_date": "2026-01-13T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "1a236043-a307-40fe-a939-330f7306294d",
+    "title": "Product Management Intern",
+    "company": "Microsoft India",
+    "company_type": "tech_giants",
+    "description": "Looking for Product Management Intern to join our team. Work on Account Management, Excel projects.",
+    "location": "Ahmedabad, Gujarat",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.5714,
+        23.0225
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 26000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Account Management",
+      "Excel",
+      "Social Media Marketing"
+    ],
+    "requirements": [
+      "Knowledge of Account Management, Excel",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2025-12-27T15:27:18.501256",
+    "start_date": "2026-01-03T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "e31283ff-1b07-416c-8946-396207887943",
+    "title": "Product Management Intern",
+    "company": "PwC India",
+    "company_type": "consulting",
+    "description": "Looking for Product Management Intern to join our team. Work on Project Management, Content Writing projects.",
+    "location": "Jaipur, Rajasthan",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        75.7873,
+        26.9124
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 42000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Project Management",
+      "Content Writing",
+      "Marketing"
+    ],
+    "requirements": [
+      "Knowledge of Project Management, Content Writing",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 2,
+    "application_deadline": "2025-12-27T15:27:18.493982",
+    "start_date": "2026-01-03T15:27:18.493982",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.493982"
+  },
+  {
+    "id": "5ac5f3a0-42dd-4915-97df-7a2ee727ae5a",
+    "title": "Data Science Intern",
+    "company": "Tech Mahindra",
+    "company_type": "indian_it",
+    "description": "Looking for Data Science Intern to join our team. Work on SQL, GCP projects.",
+    "location": "Jaipur, Rajasthan",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        75.7873,
+        26.9124
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 9000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "SQL",
+      "GCP",
+      "TensorFlow"
+    ],
+    "requirements": [
+      "Knowledge of SQL, GCP",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 2,
+    "application_deadline": "2026-01-28T15:27:18.484993",
+    "start_date": "2026-02-04T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "240e1dfc-d863-4a3e-8767-a12e12c6d062",
+    "title": "Software Development Intern",
+    "company": "Deloitte India",
+    "company_type": "consulting",
+    "description": "Looking for Software Development Intern to join our team. Work on CSS, React Native projects.",
+    "location": "Chennai, Tamil Nadu",
+    "city": "Chennai",
+    "state": "Tamil Nadu",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        80.2707,
+        13.0827
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 48000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "CSS",
+      "React Native",
+      "Python",
+      "PostgreSQL",
+      "Kotlin"
+    ],
+    "requirements": [
+      "Knowledge of CSS, React Native",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-27T15:27:18.501256",
+    "start_date": "2026-02-03T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "394e2bba-70a7-4d5c-8b47-d410f130d829",
+    "title": "Visual Design Intern",
+    "company": "Swiggy",
+    "company_type": "startups",
+    "description": "Looking for Visual Design Intern to join our team. Work on Illustrator, InDesign projects.",
+    "location": "Chandigarh, Chandigarh",
+    "city": "Chandigarh",
+    "state": "Chandigarh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        76.7794,
+        30.7333
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 24000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Illustrator",
+      "InDesign",
+      "After Effects",
+      "UI/UX Design",
+      "Motion Graphics"
+    ],
+    "requirements": [
+      "Knowledge of Illustrator, InDesign",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on design projects",
+      "Collaborate with team"
+    ],
+    "category": "Design",
+    "sector": "design",
+    "positions_available": 3,
+    "application_deadline": "2026-01-08T15:27:18.501256",
+    "start_date": "2026-01-15T15:27:18.501256",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.501256"
+  },
+  {
+    "id": "48ca8115-f4fa-484d-bae5-965b7d75adef",
+    "title": "Frontend Developer Intern",
+    "company": "Freshworks",
+    "company_type": "startups",
+    "description": "Looking for Frontend Developer Intern to join our team. Work on SQL, C# projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 14000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "SQL",
+      "C#",
+      ".NET",
+      "Deep Learning"
+    ],
+    "requirements": [
+      "Knowledge of SQL, C#",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-08T15:27:18.496817",
+    "start_date": "2026-01-15T15:27:18.496817",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "8c31ee26-3f30-4d23-8b05-d18d10f1f7f5",
+    "title": "Microservices Developer Intern",
+    "company": "Microsoft India",
+    "company_type": "tech_giants",
+    "description": "Looking for Microservices Developer Intern to join our team. Work on Microservices, Node.js projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 49000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Microservices",
+      "Node.js",
+      "Linux"
+    ],
+    "requirements": [
+      "Knowledge of Microservices, Node.js",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 3,
+    "application_deadline": "2026-01-10T15:27:18.484993",
+    "start_date": "2026-01-17T15:27:18.484993",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "560fd6f4-cd4a-4e83-b7f8-0b055d8a2b3d",
+    "title": "Business Development Intern",
+    "company": "Accenture India",
+    "company_type": "consulting",
+    "description": "Looking for Business Development Intern to join our team. Work on Market Research, Project Management projects.",
+    "location": "Delhi, Delhi",
+    "city": "Delhi",
+    "state": "Delhi",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.209,
+        28.6139
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 43000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "Market Research",
+      "Project Management",
+      "GST",
+      "PowerPoint",
+      "SEO"
+    ],
+    "requirements": [
+      "Knowledge of Market Research, Project Management",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2025-12-18T15:27:18.496817",
+    "start_date": "2025-12-25T15:27:18.496817",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "833c49a1-fc9d-41d2-9cc6-12a6f897ce4f",
+    "title": "Electronics Intern",
+    "company": "JP Morgan India",
+    "company_type": "finance",
+    "description": "Looking for Electronics Intern to join our team. Work on Mechanical Engineering, Quality Control projects.",
+    "location": "Chandigarh, Chandigarh",
+    "city": "Chandigarh",
+    "state": "Chandigarh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        76.7794,
+        30.7333
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 43000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Mechanical Engineering",
+      "Quality Control",
+      "Robotics",
+      "IoT",
+      "Control Systems"
+    ],
+    "requirements": [
+      "Knowledge of Mechanical Engineering, Quality Control",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on engineering projects",
+      "Collaborate with team"
+    ],
+    "category": "Engineering",
+    "sector": "engineering",
+    "positions_available": 2,
+    "application_deadline": "2026-01-01T15:27:18.495094",
+    "start_date": "2026-01-08T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "7da75e45-02c8-4830-b790-faaf01fba19b",
+    "title": "Graphic Design Intern",
+    "company": "Tech Mahindra",
+    "company_type": "indian_it",
+    "description": "Looking for Graphic Design Intern to join our team. Work on After Effects, Figma projects.",
+    "location": "Kolkata, West Bengal",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        88.3639,
+        22.5726
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 21000,
+    "stipend_currency": "INR",
+    "duration": "2 months",
+    "duration_months": 2,
+    "skills": [
+      "After Effects",
+      "Figma",
+      "Adobe XD"
+    ],
+    "requirements": [
+      "Knowledge of After Effects, Figma",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on design projects",
+      "Collaborate with team"
+    ],
+    "category": "Design",
+    "sector": "design",
+    "positions_available": 3,
+    "application_deadline": "2026-01-10T15:27:18.493009",
+    "start_date": "2026-01-17T15:27:18.493009",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.493009"
+  },
+  {
+    "id": "11b32da1-43d1-4b1f-a210-f28233945777",
+    "title": "Data Science Intern",
+    "company": "Google India",
+    "company_type": "tech_giants",
+    "description": "Looking for Data Science Intern to join our team. Work on Microservices, GraphQL projects.",
+    "location": "Bangalore, Karnataka",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.5946,
+        12.9716
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 35000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Microservices",
+      "GraphQL",
+      "AWS",
+      "Kotlin",
+      "AI"
+    ],
+    "requirements": [
+      "Knowledge of Microservices, GraphQL",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 2,
+    "application_deadline": "2026-01-31T15:27:18.484993",
+    "start_date": "2026-02-07T15:27:18.484993",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.484993"
+  },
+  {
+    "id": "0a1a7c41-d125-498b-b90e-7caeab16ff59",
+    "title": "Business Development Intern",
+    "company": "Freshworks",
+    "company_type": "startups",
+    "description": "Looking for Business Development Intern to join our team. Work on Agile, Sales projects.",
+    "location": "Hyderabad, Telangana",
+    "city": "Hyderabad",
+    "state": "Telangana",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        78.4867,
+        17.385
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 10000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "Agile",
+      "Sales",
+      "Accounting",
+      "Business Development",
+      "Digital Marketing"
+    ],
+    "requirements": [
+      "Knowledge of Agile, Sales",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2026-01-28T15:27:18.496817",
+    "start_date": "2026-02-04T15:27:18.496817",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.496817"
+  },
+  {
+    "id": "4882697f-e6b3-4e8d-8f71-a19aa8dbca41",
+    "title": "Full Stack Developer Intern",
+    "company": "Zerodha",
+    "company_type": "startups",
+    "description": "Looking for Full Stack Developer Intern to join our team. Work on JavaScript, Data Science projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "WFO",
+    "is_remote": false,
+    "stipend": 25000,
+    "stipend_currency": "INR",
+    "duration": "3 months",
+    "duration_months": 3,
+    "skills": [
+      "JavaScript",
+      "Data Science",
+      "Microservices"
+    ],
+    "requirements": [
+      "Knowledge of JavaScript, Data Science",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-30T15:27:18.493982",
+    "start_date": "2026-02-06T15:27:18.493982",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.493982"
+  },
+  {
+    "id": "8fc98f47-744b-4427-a871-9ea0be615833",
+    "title": "Data Science Intern",
+    "company": "Goldman Sachs India",
+    "company_type": "finance",
+    "description": "Looking for Data Science Intern to join our team. Work on GraphQL, TypeScript projects.",
+    "location": "Noida, Uttar Pradesh",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        77.391,
+        28.5355
+      ]
+    },
+    "work_type": "Remote",
+    "is_remote": true,
+    "stipend": 29000,
+    "stipend_currency": "INR",
+    "duration": "1 month",
+    "duration_months": 1,
+    "skills": [
+      "GraphQL",
+      "TypeScript",
+      "REST API"
+    ],
+    "requirements": [
+      "Knowledge of GraphQL, TypeScript",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on technology projects",
+      "Collaborate with team"
+    ],
+    "category": "Technology",
+    "sector": "technology",
+    "positions_available": 5,
+    "application_deadline": "2026-01-05T15:27:18.495094",
+    "start_date": "2026-01-12T15:27:18.495094",
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2025-12-09T15:27:18.495094"
+  },
+  {
+    "id": "491d8b5d-6f29-4cfd-b752-16c587c53255",
+    "title": "Marketing Intern",
+    "company": "Goldman Sachs India",
+    "company_type": "finance",
+    "description": "Looking for Marketing Intern to join our team. Work on Business Analysis, Agile projects.",
+    "location": "Mumbai, Maharashtra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "location_coordinates": {
+      "type": "Point",
+      "coordinates": [
+        72.8777,
+        19.076
+      ]
+    },
+    "work_type": "Hybrid",
+    "is_remote": true,
+    "stipend": 45000,
+    "stipend_currency": "INR",
+    "duration": "6 months",
+    "duration_months": 6,
+    "skills": [
+      "Business Analysis",
+      "Agile",
+      "SEO",
+      "SEM",
+      "Business Development"
+    ],
+    "requirements": [
+      "Knowledge of Business Analysis, Agile",
+      "Good communication skills"
+    ],
+    "responsibilities": [
+      "Work on business projects",
+      "Collaborate with team"
+    ],
+    "category": "Business",
+    "sector": "business",
+    "positions_available": 5,
+    "application_deadline": "2025-12-18T15:27:18.501256",
+    "start_date": "2025-12-25T15:27:18.501256",
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2025-12-09T15:27:18.501256"
+  }
+]
