@@ -1,9 +1,9 @@
 // File: frontend/src/services/api.ts
-import { 
-  ApiResponse, 
-  TokenResponse, 
-  SendOTPResponse, 
-  User 
+import {
+  ApiResponse,
+  TokenResponse,
+  SendOTPResponse,
+  User
 } from '@/types/auth';
 import { StudentProfileResponse } from '@/types/profile';
 import {
@@ -14,6 +14,7 @@ import {
   TrendingResponse,
   TrendingInternship,
 } from '@/types/recommendations';
+import { mapStudentToOpenResume } from '@/utils/mapStudentToOpenResume';
 
 export const API_BASE_URL =
   import.meta.env.VITE_STUDENT_API_URL ||
@@ -299,21 +300,8 @@ class ApiService {
     return response.trending_internships;
   }
 
-  async getMyApplications(): Promise<{ applications: Array<{
-    application_id: string;
-    internship_id: string;
-    title: string;
-    company: string;
-    location: string;
-    stipend: number;
-    duration: string;
-    work_type: string;
-    application_status: string;
-    applied_at: string | null;
-    cover_letter?: string;
-    notes?: string;
-  }> }> {
-    return this.request<{ applications: Array<{
+  async getMyApplications(): Promise<{
+    applications: Array<{
       application_id: string;
       internship_id: string;
       title: string;
@@ -326,7 +314,24 @@ class ApiService {
       applied_at: string | null;
       cover_letter?: string;
       notes?: string;
-    }> }>('/api/v1/applications/my-applications', {
+    }>
+  }> {
+    return this.request<{
+      applications: Array<{
+        application_id: string;
+        internship_id: string;
+        title: string;
+        company: string;
+        location: string;
+        stipend: number;
+        duration: string;
+        work_type: string;
+        application_status: string;
+        applied_at: string | null;
+        cover_letter?: string;
+        notes?: string;
+      }>
+    }>('/api/v1/applications/my-applications', {
       method: 'GET',
     });
   }
@@ -380,39 +385,47 @@ class ApiService {
   }
 
   async downloadResume(): Promise<Blob> {
-    const token = localStorage.getItem('access_token');
-    const userProfile = JSON.parse(localStorage.getItem('userFullProfile') || '{}');
-    
-    const response = await fetch(`${this.baseUrl}/api/v1/resume/generate-pdf`, {
+    const userProfileReference = JSON.parse(localStorage.getItem('userFullProfile') || '{}');
+
+    // We need complete profile data for the resume, try to fetch it first or use what we have
+    let fullProfile = userProfileReference;
+    try {
+      // Try to use the stored full profile if available, or fetch it
+      // For now, we rely on what's in localStorage as this is often called after updates
+    } catch (e) {
+      console.warn("Using cached profile for resume");
+    }
+
+    // Map to Open Resume format
+    // usage of mapStudentToOpenResume handles the mapping from our frontend/backend structure to Open Resume
+    const resumeData = mapStudentToOpenResume(fullProfile);
+
+    // Call Open Resume API (running locally on port 3000 as per setup)
+    const response = await fetch('http://localhost:3000/api/generate-pdf', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify({
-        firstName: userProfile.firstName || userProfile.fullName?.split(' ')[0] || 'User',
-        lastName: userProfile.lastName || userProfile.fullName?.split(' ').slice(1).join(' ') || '',
-        phone: userProfile.phone || '',
-        email: userProfile.email || '',
-        dateOfBirth: userProfile.dateOfBirth || '',
-        gender: userProfile.gender || '',
-        address: userProfile.address || '',
-        languages: userProfile.languages || '',
-        linkedin: userProfile.linkedin || '',
-        careerObjective: userProfile.careerObjective || '',
-        education: userProfile.education || [],
-        experience: userProfile.experience || [],
-        trainings: userProfile.trainings || [],
-        projects: userProfile.projects || [],
-        skills: userProfile.skills || [],
-        portfolio: userProfile.portfolio || [],
-        accomplishments: userProfile.accomplishments || []
+        resume: resumeData,
+        settings: {
+          formToShow: {
+            workExperiences: true,
+            educations: true,
+            projects: true,
+            skills: true,
+            custom: true,
+          },
+          formToHeading: {
+            custom: "ACCOMPLISHMENTS"
+          }
+        }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(errorText || 'Failed to generate resume');
+      throw new Error(errorText || 'Failed to generate resume via Open Resume');
     }
 
     return response.blob();

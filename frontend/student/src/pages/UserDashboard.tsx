@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/services/api";
 import { Recommendation } from "@/types/recommendations";
-import { useLanguage } from "@/context/LanguageContext"; // Added import
-import { 
-  MapPin, 
-  Calendar, 
+import { useLanguage } from "@/context/LanguageContext";
+import { mapStudentToOpenResume } from "@/utils/mapStudentToOpenResume";
+import {
+  MapPin,
+  Calendar,
   IndianRupee,
   CheckCircle,
   XCircle,
@@ -66,6 +67,8 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage(); // Hook
+
+
   const [activeTab, setActiveTab] = useState("internships");
   const [locationFilter, setLocationFilter] = useState("");
   const [stipendFilter, setStipendFilter] = useState(0);
@@ -81,7 +84,7 @@ const UserDashboard = () => {
   const [applicationsLoading, setApplicationsLoading] = useState(false);
   const [applicationsError, setApplicationsError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
-  
+
   // Refs for polling intervals
   const applicationsPollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const recommendationsPollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -91,7 +94,7 @@ const UserDashboard = () => {
     try {
       setRecommendationsLoading(true);
       const params: Record<string, string | number | undefined> = { limit: 5 };
-      
+
       if (locationFilter && locationFilter !== "") {
         params.location = locationFilter;
       }
@@ -105,7 +108,7 @@ const UserDashboard = () => {
       if (workType.length > 0) {
         params.work_type = workType.join(',');
       }
-      
+
       const data = await apiService.getStudentRecommendations(params);
       console.log("Recommendations API Response:", data);
       console.log("Number of recommendations:", data.recommendations?.length || 0);
@@ -176,7 +179,7 @@ const UserDashboard = () => {
   // Handle apply from modal
   const handleApply = async () => {
     if (!internshipDetails || !internshipDetails.id) return;
-    
+
     try {
       setApplying(true);
       if (internshipDetails.apply_url) {
@@ -217,24 +220,60 @@ const UserDashboard = () => {
     try {
       toast({
         title: "Generating Resume",
-        description: "Please wait while we generate your resume PDF...",
+        description: "Please wait while we generate your resume PDF via Open Resume...",
       });
-      const blob = await apiService.downloadResume();
+
+      // 1. Fetch latest profile
+      const profile = await apiService.getProfile();
+
+      // 2. Map to Open Resume format
+      const resumeData = mapStudentToOpenResume(profile);
+
+      // 3. Call Open Resume API
+      const response = await fetch('http://localhost:3000/api/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resume: resumeData,
+          settings: {
+            formToShow: {
+              workExperiences: true,
+              educations: true,
+              projects: true,
+              skills: true,
+              custom: true,
+            },
+            formToHeading: {
+              custom: "ACCOMPLISHMENTS"
+            }
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF from Open Resume service');
+      }
+
+      // 4. DownloadBlob
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const userProfile = JSON.parse(localStorage.getItem('userFullProfile') || '{}');
-      const fileName = `resume_${userProfile.firstName || 'User'}_${userProfile.lastName || ''}.pdf`.trim();
+      const fileName = `resume_${profile.first_name || 'User'}_${profile.last_name || ''}.pdf`.trim();
       a.download = fileName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+
       toast({
         title: "Resume Downloaded! 📄",
-        description: "Your professional resume PDF has been downloaded.",
+        description: "Your professional resume PDF has been downloaded using Open Resume engine.",
       });
     } catch (error) {
+      console.error(error);
       const errorMessage = error instanceof Error ? error.message : "Failed to download resume";
       toast({
         title: "Error",
@@ -257,7 +296,7 @@ const UserDashboard = () => {
       navigate("/login");
       return;
     }
-    
+
     // Check if profile was just updated
     const profileUpdated = localStorage.getItem("profileUpdated");
     if (profileUpdated === "true") {
@@ -273,7 +312,7 @@ const UserDashboard = () => {
     } else {
       fetchRecommendations();
     }
-    
+
     fetchApplications();
   }, [fetchRecommendations, fetchApplications, navigate, toast]);
 
@@ -358,14 +397,14 @@ const UserDashboard = () => {
         {/* RESUME DOWNLOAD BANNER */}
         <div className="bg-green-50 border-b p-6 shadow-sm mt-4">
           <div className="max-w-7xl mx-auto flex items-center gap-4">
-            <button 
+            <button
               onClick={handleDownloadResume}
               className="bg-blue-200 hover:bg-blue-300 text-gray-800 px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition"
             >
               <Download className="w-5 h-5" />
               {t("dashboard.downloadResumeBanner.button")}
             </button>
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-700 text-sm hidden md:block">
               <span className="font-medium">{t("dashboard.downloadResumeBanner.text")}</span>
             </p>
           </div>
@@ -477,22 +516,20 @@ const UserDashboard = () => {
               <div className="flex gap-6 mb-6 text-lg font-semibold">
                 <button
                   onClick={() => setActiveTab("internships")}
-                  className={`pb-1 ${
-                    activeTab === "internships"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500"
-                  }`}
+                  className={`pb-1 ${activeTab === "internships"
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-500"
+                    }`}
                 >
                   {t("dashboard.tabs.internships")}
                 </button>
 
                 <button
                   onClick={() => setActiveTab("applications")}
-                  className={`pb-1 ${
-                    activeTab === "applications"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500"
-                  }`}
+                  className={`pb-1 ${activeTab === "applications"
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-500"
+                    }`}
                 >
                   {t("dashboard.tabs.applications")}
                 </button>
@@ -651,22 +688,20 @@ const UserDashboard = () => {
                         {/* Status Timeline - Same as before */}
                         <div className="space-y-4 mt-6 relative border-t pt-6">
                           <div className="absolute left-4 top-8 bottom-8 w-0.5 bg-gray-200"></div>
-                          
+
                           {/* Step 1 */}
                           <div className="flex gap-4 relative">
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${
-                              ["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
-                                ? "bg-orange-500 text-white"
-                                : "bg-gray-200 text-gray-500"
-                            }`}>
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
+                              ? "bg-orange-500 text-white"
+                              : "bg-gray-200 text-gray-500"
+                              }`}>
                               1
                             </div>
                             <div>
-                              <h3 className={`font-semibold ${
-                                ["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-900"
-                                  : "text-gray-500"
-                              }`}>
+                              <h3 className={`font-semibold ${["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-900"
+                                : "text-gray-500"
+                                }`}>
                                 Application Submitted
                               </h3>
                               {app.applied_at && (
@@ -674,11 +709,10 @@ const UserDashboard = () => {
                                   {new Date(app.applied_at).toLocaleDateString()}
                                 </p>
                               )}
-                              <p className={`text-sm mb-2 ${
-                                ["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-600"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-sm mb-2 ${["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-600"
+                                : "text-gray-400"
+                                }`}>
                                 Your application has been received successfully.
                               </p>
                               {["submitted", "pending", "under_review", "applied"].includes(app.application_status.toLowerCase()) && (
@@ -691,35 +725,31 @@ const UserDashboard = () => {
 
                           {/* Step 2 */}
                           <div className="flex gap-4 relative">
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${
-                              ["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
-                                ? "bg-orange-500 text-white"
-                                : "bg-gray-200 text-gray-500"
-                            }`}>
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
+                              ? "bg-orange-500 text-white"
+                              : "bg-gray-200 text-gray-500"
+                              }`}>
                               2
                             </div>
                             <div>
-                              <h3 className={`font-medium ${
-                                ["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-900"
-                                  : "text-gray-500"
-                              }`}>
+                              <h3 className={`font-medium ${["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-900"
+                                : "text-gray-500"
+                                }`}>
                                 Application Under Review
                               </h3>
-                              <p className={`text-xs mb-1 ${
-                                ["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-500"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-xs mb-1 ${["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-500"
+                                : "text-gray-400"
+                                }`}>
                                 {["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
                                   ? "In Progress"
                                   : "Pending"}
                               </p>
-                              <p className={`text-sm ${
-                                ["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-600"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-sm ${["under_review", "reviewed", "shortlisted"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-600"
+                                : "text-gray-400"
+                                }`}>
                                 The employer is currently reviewing your profile and skills.
                               </p>
                             </div>
@@ -727,35 +757,31 @@ const UserDashboard = () => {
 
                           {/* Step 3 */}
                           <div className="flex gap-4 relative">
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${
-                              ["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
-                                ? "bg-orange-500 text-white"
-                                : "bg-gray-200 text-gray-500"
-                            }`}>
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
+                              ? "bg-orange-500 text-white"
+                              : "bg-gray-200 text-gray-500"
+                              }`}>
                               3
                             </div>
                             <div>
-                              <h3 className={`font-medium ${
-                                ["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-900"
-                                  : "text-gray-500"
-                              }`}>
+                              <h3 className={`font-medium ${["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-900"
+                                : "text-gray-500"
+                                }`}>
                                 Interview/Assessment Scheduled
                               </h3>
-                              <p className={`text-xs mb-1 ${
-                                ["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-500"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-xs mb-1 ${["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-500"
+                                : "text-gray-400"
+                                }`}>
                                 {["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
                                   ? "In Progress"
                                   : "Pending"}
                               </p>
-                              <p className={`text-sm ${
-                                ["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-600"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-sm ${["shortlisted", "interview_scheduled"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-600"
+                                : "text-gray-400"
+                                }`}>
                                 You've been shortlisted! Check your email for next steps.
                               </p>
                             </div>
@@ -763,37 +789,33 @@ const UserDashboard = () => {
 
                           {/* Step 4 */}
                           <div className="flex gap-4 relative">
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${
-                              ["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
-                                ? app.application_status.toLowerCase() === "rejected"
-                                  ? "bg-red-500 text-white"
-                                  : "bg-green-500 text-white"
-                                : "bg-gray-200 text-gray-500"
-                            }`}>
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 ${["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
+                              ? app.application_status.toLowerCase() === "rejected"
+                                ? "bg-red-500 text-white"
+                                : "bg-green-500 text-white"
+                              : "bg-gray-200 text-gray-500"
+                              }`}>
                               4
                             </div>
                             <div>
-                              <h3 className={`font-medium ${
-                                ["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-900"
-                                  : "text-gray-500"
-                              }`}>
+                              <h3 className={`font-medium ${["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-900"
+                                : "text-gray-500"
+                                }`}>
                                 Final Decision
                               </h3>
-                              <p className={`text-xs mb-1 ${
-                                ["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-500"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-xs mb-1 ${["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-500"
+                                : "text-gray-400"
+                                }`}>
                                 {["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
                                   ? formatStatus(app.application_status)
                                   : "Pending"}
                               </p>
-                              <p className={`text-sm ${
-                                ["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
-                                  ? "text-gray-600"
-                                  : "text-gray-400"
-                              }`}>
+                              <p className={`text-sm ${["accepted", "selected", "rejected"].includes(app.application_status.toLowerCase())
+                                ? "text-gray-600"
+                                : "text-gray-400"
+                                }`}>
                                 {app.application_status.toLowerCase() === "rejected"
                                   ? "Unfortunately, your application was not selected."
                                   : "Decision pending."}
@@ -814,154 +836,156 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {/* APPLY MODAL */}
-      {selectedInternshipId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => {
-          setSelectedInternshipId(null);
-          setInternshipDetails(null);
-        }}>
-          <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded-xl shadow-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            {detailsLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading internship details...</p>
-              </div>
-            ) : internshipDetails ? (
-              <>
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold">{internshipDetails.title}</h2>
-                    <p className="text-blue-600 font-medium text-lg">{internshipDetails.company}</p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setSelectedInternshipId(null);
-                      setInternshipDetails(null);
-                    }}
-                    className="text-gray-400 hover:text-gray-600 text-2xl"
-                  >
-                    ×
-                  </button>
+      {
+        selectedInternshipId && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => {
+            setSelectedInternshipId(null);
+            setInternshipDetails(null);
+          }}>
+            <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded-xl shadow-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              {detailsLoading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading internship details...</p>
                 </div>
-
-                {internshipDetails.company_description && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">About Company</h3>
-                    <p className="text-gray-700 text-sm">{internshipDetails.company_description}</p>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                  {internshipDetails.location && (
+              ) : internshipDetails ? (
+                <>
+                  <div className="flex justify-between items-start mb-4">
                     <div>
-                      <strong>📍 Location:</strong> {internshipDetails.location}
+                      <h2 className="text-2xl font-semibold">{internshipDetails.title}</h2>
+                      <p className="text-blue-600 font-medium text-lg">{internshipDetails.company}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedInternshipId(null);
+                        setInternshipDetails(null);
+                      }}
+                      className="text-gray-400 hover:text-gray-600 text-2xl"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {internshipDetails.company_description && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">About Company</h3>
+                      <p className="text-gray-700 text-sm">{internshipDetails.company_description}</p>
                     </div>
                   )}
-                  {internshipDetails.stipend && (
-                    <div>
-                      <strong>💰 Stipend:</strong> ₹{internshipDetails.stipend.toLocaleString()}/month
+
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    {internshipDetails.location && (
+                      <div>
+                        <strong>📍 Location:</strong> {internshipDetails.location}
+                      </div>
+                    )}
+                    {internshipDetails.stipend && (
+                      <div>
+                        <strong>💰 Stipend:</strong> ₹{internshipDetails.stipend.toLocaleString()}/month
+                      </div>
+                    )}
+                    {internshipDetails.duration && (
+                      <div>
+                        <strong>📅 Duration:</strong> {internshipDetails.duration}
+                      </div>
+                    )}
+                    {internshipDetails.work_type && (
+                      <div>
+                        <strong>🏢 Work Type:</strong> {internshipDetails.work_type}
+                      </div>
+                    )}
+                    {internshipDetails.start_date && (
+                      <div>
+                        <strong>📆 Start Date:</strong> {new Date(internshipDetails.start_date).toLocaleDateString()}
+                      </div>
+                    )}
+                    {internshipDetails.application_deadline && (
+                      <div>
+                        <strong>⏰ Deadline:</strong> {new Date(internshipDetails.application_deadline).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+
+                  {internshipDetails.description && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">Description</h3>
+                      <p className="text-gray-700 text-sm whitespace-pre-wrap">{internshipDetails.description}</p>
                     </div>
                   )}
-                  {internshipDetails.duration && (
-                    <div>
-                      <strong>📅 Duration:</strong> {internshipDetails.duration}
+
+                  {internshipDetails.responsibilities && Array.isArray(internshipDetails.responsibilities) && internshipDetails.responsibilities.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">Responsibilities</h3>
+                      <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        {internshipDetails.responsibilities.map((resp, i) => (
+                          <li key={i}>{resp}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
-                  {internshipDetails.work_type && (
-                    <div>
-                      <strong>🏢 Work Type:</strong> {internshipDetails.work_type}
+
+                  {internshipDetails.requirements && Array.isArray(internshipDetails.requirements) && internshipDetails.requirements.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">Requirements</h3>
+                      <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        {internshipDetails.requirements.map((req, i) => (
+                          <li key={i}>{req}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
-                  {internshipDetails.start_date && (
-                    <div>
-                      <strong>📆 Start Date:</strong> {new Date(internshipDetails.start_date).toLocaleDateString()}
+
+                  {internshipDetails.skills && internshipDetails.skills.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">Required Skills</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {internshipDetails.skills.map((skill, i) => (
+                          <span key={i} className="px-2 py-1 text-xs bg-gray-100 rounded-md border">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
-                  {internshipDetails.application_deadline && (
-                    <div>
-                      <strong>⏰ Deadline:</strong> {new Date(internshipDetails.application_deadline).toLocaleDateString()}
+
+                  {internshipDetails.tags && internshipDetails.tags.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="font-semibold mb-2">Tags</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {internshipDetails.tags.map((tag, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
-                </div>
 
-                {internshipDetails.description && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Description</h3>
-                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{internshipDetails.description}</p>
+                  <div className="flex justify-end mt-6 space-x-3 border-t pt-4">
+                    <button
+                      onClick={() => {
+                        setSelectedInternshipId(null);
+                        setInternshipDetails(null);
+                      }}
+                      className="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition"
+                    >
+                      Close
+                    </button>
+                    <button
+                      onClick={handleApply}
+                      className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={internshipDetails.has_applied || applying}
+                    >
+                      {applying ? "Applying..." : internshipDetails.has_applied ? "Already Applied" : "Apply Now"}
+                    </button>
                   </div>
-                )}
-
-                {internshipDetails.responsibilities && Array.isArray(internshipDetails.responsibilities) && internshipDetails.responsibilities.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Responsibilities</h3>
-                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                      {internshipDetails.responsibilities.map((resp, i) => (
-                        <li key={i}>{resp}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {internshipDetails.requirements && Array.isArray(internshipDetails.requirements) && internshipDetails.requirements.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Requirements</h3>
-                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                      {internshipDetails.requirements.map((req, i) => (
-                        <li key={i}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {internshipDetails.skills && internshipDetails.skills.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Required Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {internshipDetails.skills.map((skill, i) => (
-                        <span key={i} className="px-2 py-1 text-xs bg-gray-100 rounded-md border">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {internshipDetails.tags && internshipDetails.tags.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Tags</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {internshipDetails.tags.map((tag, i) => (
-                        <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-end mt-6 space-x-3 border-t pt-4">
-                  <button
-                    onClick={() => {
-                      setSelectedInternshipId(null);
-                      setInternshipDetails(null);
-                    }}
-                    className="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition"
-                  >
-                    Close
-                  </button>
-                  <button
-                    onClick={handleApply}
-                    className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={internshipDetails.has_applied || applying}
-                  >
-                    {applying ? "Applying..." : internshipDetails.has_applied ? "Already Applied" : "Apply Now"}
-                  </button>
-                </div>
-              </>
-            ) : null}
+                </>
+              ) : null}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <Footer />
     </>
