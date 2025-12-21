@@ -45,3 +45,5 @@ IDE / editor
 *.sln
 *.sw?
 *.swp​
+# Exclude large dataset file
+backend/student/data/synthetic/dataset_full.json
