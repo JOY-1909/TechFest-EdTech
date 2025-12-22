@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ProfileSetupChoice from "./pages/ProfileSetupChoice";
 import MultiStepForm from "./pages/MultiStepForm";
 import UserDashboard from "./pages/UserDashboard";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile-setup-choice" element={<ProfileSetupChoice />} />
           <Route path="/complete-profile" element={<MultiStepForm />} />
           <Route path="/multi-step-form" element={<MultiStepForm />} />
           <Route path="/dashboard" element={<UserDashboard />} />

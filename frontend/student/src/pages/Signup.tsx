@@ -16,8 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, UserPlus, Mail as MailIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/firebase";
-import { 
-  signInWithPopup, 
+import {
+  signInWithPopup,
   GoogleAuthProvider
 } from "firebase/auth";
 import { apiService } from "@/services/api";
@@ -162,9 +162,9 @@ export default function Signup() {
         description: "Your account has been created successfully. Redirecting to profile setup...",
       });
 
-      // Redirect to multi-step form
+      // Redirect to profile setup choice (first-time users)
       setTimeout(() => {
-        navigate("/complete-profile");
+        navigate("/profile-setup-choice");
       }, 1500);
 
     } catch (error) {
@@ -186,12 +186,12 @@ export default function Signup() {
   const handleGoogleSignup = async () => {
     try {
       setIsGoogleLoading(true);
-      
+
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      
+
       const idToken = await user.getIdToken();
-      
+
       await apiService.googleSignup(idToken);
 
       toast({
@@ -199,9 +199,9 @@ export default function Signup() {
         description: `Successfully signed in with Google as ${user.email}`,
       });
 
-      // FIXED: Always redirect to complete-profile for Google signup
+      // FIXED: Redirect to profile-setup-choice for Google signup
       // Since Google users typically don't have completed profiles initially
-      navigate("/complete-profile");
+      navigate("/profile-setup-choice");
 
     } catch (error) {
       const errorMessage =

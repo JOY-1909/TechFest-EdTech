@@ -27,12 +27,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, MapPin, Download, Home, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, MapPin, Download, Home, FileText, Upload } from "lucide-react";
 import { API_BASE_URL, apiService } from "@/services/api";
 import { mapStudentToOpenResume } from "@/utils/mapStudentToOpenResume";
+import { ResumeUploadButton, type ParsedResume } from "@/components/ui/ResumeUploadButton";
+import { mapParsedResumeToFormData, mergeResumeDataWithFormData } from "@/utils/mapParsedResumeToFormData";
 
 // ---------- Types ----------
-interface EducationItem {
+export interface EducationItem {
   id: number;
   institution: string;
   degree: string;
@@ -42,7 +44,7 @@ interface EducationItem {
   score: string;
 }
 
-interface ExperienceItem {
+export interface ExperienceItem {
   id: number;
   type: "Internship";
   company: string;
@@ -52,7 +54,7 @@ interface ExperienceItem {
   description: string;
 }
 
-interface TrainingItem {
+export interface TrainingItem {
   id: number;
   title: string;
   provider: string;
@@ -61,7 +63,7 @@ interface TrainingItem {
   credentialLink: string;
 }
 
-interface ProjectItem {
+export interface ProjectItem {
   id: number;
   title: string;
   role: string;
@@ -69,33 +71,33 @@ interface ProjectItem {
   description: string;
 }
 
-interface SkillItem {
+export interface SkillItem {
   id: number;
   name: string;
   level: string;
 }
 
-interface PortfolioItem {
+export interface PortfolioItem {
   id: number;
   title: string;
   link: string;
   description: string;
 }
 
-interface AccomplishmentItem {
+export interface AccomplishmentItem {
   id: number;
   title: string;
   description: string;
   credentialUrl: string;
 }
 
-interface Location {
+export interface Location {
   address: string;
   latitude: number;
   longitude: number;
 }
 
-interface FormData {
+export interface FormData {
   firstName: string;
   lastName: string;
   email: string;
@@ -502,6 +504,9 @@ export default function MultiStepForm() {
   const isEditMode = location.state?.edit;
   const existingProfile = location.state?.profile;
 
+  // Check if we're in autofill mode (from ProfileSetupChoice)
+  const isAutofillMode = location.state?.autofill === true;
+
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
 
@@ -567,6 +572,21 @@ export default function MultiStepForm() {
   const [customSkill, setCustomSkill] = useState("");
   const [customSkillLevel, setCustomSkillLevel] = useState("");
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  // Only show resume upload in autofill mode (first-time signup), NOT in edit mode
+  const [showResumeUpload, setShowResumeUpload] = useState(isAutofillMode);
+
+  // Handler for when resume is successfully parsed (first-time signup only)
+  const handleResumeParseSuccess = (parsedResume: ParsedResume) => {
+    const parsedData = mapParsedResumeToFormData(parsedResume);
+    // For first-time signup, fill empty fields only
+    const mergedData = mergeResumeDataWithFormData(formData, parsedData, false);
+    setFormData({ ...mergedData });
+
+    toast({
+      title: "Resume data applied! ✅",
+      description: "Your resume data has been added to the form. Please review and complete any missing fields.",
+    });
+  };
 
   // Fetch complete profile data when in edit mode
   useEffect(() => {
@@ -1475,207 +1495,219 @@ export default function MultiStepForm() {
                 <>
                   {/* STEP 1: PERSONAL DETAILS */}
                   {currentStep === 1 && (
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First name *</Label>
-                        <Input
-                          ref={firstNameRef}
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) => updateField("firstName", e.target.value)}
-                          placeholder="Enter first name"
-                          className={fieldErrors.firstName ? "border-red-500" : ""}
-                        />
-                        {fieldErrors.firstName && (
-                          <p className="text-sm text-red-500">{fieldErrors.firstName}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last name</Label>
-                        <Input
-                          ref={lastNameRef}
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => updateField("lastName", e.target.value)}
-                          placeholder="Enter last name"
-                        />
-                      </div>
-
-                      {/* Phone number - WITHOUT OTP verification */}
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="phone">Phone number *</Label>
-                        <div className="flex flex-col gap-2">
-                          <div className="flex gap-2">
-                            <Input
-                              ref={phoneRef}
-                              id="phone"
-                              value={formData.phone}
-                              onChange={(e) => handlePhoneInput(e.target.value)}
-                              placeholder="10-digit mobile number"
-                              maxLength={10}
-                              className={fieldErrors.phone ? "border-red-500" : ""}
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                            />
-                          </div>
-                          {fieldErrors.phone && (
-                            <p className="text-sm text-red-500">{fieldErrors.phone}</p>
-                          )}
-                          <p className="text-xs text-gray-500">
-                            Enter your 10-digit phone number (digits only).
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="dob">Date of birth *</Label>
-                        <Input
-                          ref={dobRef}
-                          id="dob"
-                          type="date"
-                          value={formData.dateOfBirth}
-                          onChange={(e) => handleDOBInput(e.target.value)}
-                          className={fieldErrors.dateOfBirth ? "border-red-500" : ""}
-                          min="2000-01-01"
-                          max="2005-12-31"
-                        />
-                        {fieldErrors.dateOfBirth && (
-                          <p className="text-sm text-red-500">{fieldErrors.dateOfBirth}</p>
-                        )}
-                        {formData.dateOfBirth && !fieldErrors.dateOfBirth && (
-                          <p className="text-xs text-green-600">
-                            Age: {calculateAge(formData.dateOfBirth)} years
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Gender *</Label>
-                        <Select
-                          value={formData.gender}
-                          onValueChange={(value) => updateField("gender", value)}
-                        >
-                          <SelectTrigger
-                            ref={genderRef}
-                            className={fieldErrors.gender ? "border-red-500" : ""}
-                          >
-                            <SelectValue placeholder="Select gender" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
-                            <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {fieldErrors.gender && (
-                          <p className="text-sm text-red-500">{fieldErrors.gender}</p>
-                        )}
-                      </div>
-
-                      <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="address">Address *</Label>
-                        <Textarea
-                          ref={addressRef}
-                          id="address"
-                          rows={2}
-                          value={formData.address}
-                          onChange={(e) => updateField("address", e.target.value)}
-                          placeholder="House no., street, area, city, state"
-                          className={fieldErrors.address ? "border-red-500" : ""}
-                        />
-                        {fieldErrors.address && (
-                          <p className="text-sm text-red-500">{fieldErrors.address}</p>
-                        )}
-                      </div>
-
-                      {/* Map Integration - UPDATED: Now in square shape with box UI */}
-                      <div className="md:col-span-2 space-y-2">
-                        <MapComponent
-                          location={formData.location}
-                          onLocationSelect={handleLocationSelect}
-                        />
-                      </div>
-
-                      {/* Languages */}
-                      <div className="md:col-span-2 space-y-2">
-                        <Label>Languages you know</Label>
-                        <div className="flex flex-wrap gap-2">
-                          {getAllSelectedLanguages().map((lang) => {
-                            const selected = getAllSelectedLanguages().includes(lang);
-
-                            return (
-                              <button
-                                key={lang}
-                                type="button"
-                                onClick={() => {
-                                  let next: string[];
-                                  if (selected) {
-                                    next = getAllSelectedLanguages().filter((l) => l !== lang);
-                                  } else {
-                                    next = [...getAllSelectedLanguages(), lang];
-                                  }
-                                  updateField("languages", next.join(", "));
-                                }}
-                                className={`px-3 py-1 rounded-full text-sm border ${selected
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : "bg-white text-gray-700 border-gray-300"
-                                  }`}
-                              >
-                                {lang}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        <div className="flex gap-2 mt-2">
-                          <Input
-                            placeholder="Add more languages"
-                            value={customLanguage}
-                            onChange={(e) => setCustomLanguage(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                handleAddCustomLanguage();
-                              }
-                            }}
+                    <div className="space-y-6">
+                      {/* Resume Upload Section - shown in autofill or edit mode */}
+                      {showResumeUpload && (
+                        <div className="mb-6">
+                          <ResumeUploadButton
+                            onParseSuccess={handleResumeParseSuccess}
+                            variant={isAutofillMode ? "default" : "compact"}
                           />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleAddCustomLanguage}
-                          >
-                            Add
-                          </Button>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="linkedin">LinkedIn profile link</Label>
-                        <Input
-                          id="linkedin"
-                          value={formData.linkedin}
-                          onChange={(e) => updateField("linkedin", e.target.value)}
-                          placeholder="https://www.linkedin.com/in/username"
-                          className={fieldErrors.linkedin ? "border-red-500" : ""}
-                          type="url"
-                        />
-                        {fieldErrors.linkedin && (
-                          <p className="text-sm text-red-500">{fieldErrors.linkedin}</p>
-                        )}
-                        {formData.linkedin && !fieldErrors.linkedin && (
-                          <p className="text-xs text-green-600">✓ Valid LinkedIn URL</p>
-                        )}
-                      </div>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First name *</Label>
+                          <Input
+                            ref={firstNameRef}
+                            id="firstName"
+                            value={formData.firstName}
+                            onChange={(e) => updateField("firstName", e.target.value)}
+                            placeholder="Enter first name"
+                            className={fieldErrors.firstName ? "border-red-500" : ""}
+                          />
+                          {fieldErrors.firstName && (
+                            <p className="text-sm text-red-500">{fieldErrors.firstName}</p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last name</Label>
+                          <Input
+                            ref={lastNameRef}
+                            id="lastName"
+                            value={formData.lastName}
+                            onChange={(e) => updateField("lastName", e.target.value)}
+                            placeholder="Enter last name"
+                          />
+                        </div>
 
-                      <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="careerObjective">Career objective</Label>
-                        <Textarea
-                          id="careerObjective"
-                          rows={3}
-                          value={formData.careerObjective}
-                          onChange={(e) => updateField("careerObjective", e.target.value)}
-                          placeholder="Briefly describe your career objective."
-                        />
+                        {/* Phone number - WITHOUT OTP verification */}
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="phone">Phone number *</Label>
+                          <div className="flex flex-col gap-2">
+                            <div className="flex gap-2">
+                              <Input
+                                ref={phoneRef}
+                                id="phone"
+                                value={formData.phone}
+                                onChange={(e) => handlePhoneInput(e.target.value)}
+                                placeholder="10-digit mobile number"
+                                maxLength={10}
+                                className={fieldErrors.phone ? "border-red-500" : ""}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                              />
+                            </div>
+                            {fieldErrors.phone && (
+                              <p className="text-sm text-red-500">{fieldErrors.phone}</p>
+                            )}
+                            <p className="text-xs text-gray-500">
+                              Enter your 10-digit phone number (digits only).
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="dob">Date of birth *</Label>
+                          <Input
+                            ref={dobRef}
+                            id="dob"
+                            type="date"
+                            value={formData.dateOfBirth}
+                            onChange={(e) => handleDOBInput(e.target.value)}
+                            className={fieldErrors.dateOfBirth ? "border-red-500" : ""}
+                            min="2000-01-01"
+                            max="2005-12-31"
+                          />
+                          {fieldErrors.dateOfBirth && (
+                            <p className="text-sm text-red-500">{fieldErrors.dateOfBirth}</p>
+                          )}
+                          {formData.dateOfBirth && !fieldErrors.dateOfBirth && (
+                            <p className="text-xs text-green-600">
+                              Age: {calculateAge(formData.dateOfBirth)} years
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Gender *</Label>
+                          <Select
+                            value={formData.gender}
+                            onValueChange={(value) => updateField("gender", value)}
+                          >
+                            <SelectTrigger
+                              ref={genderRef}
+                              className={fieldErrors.gender ? "border-red-500" : ""}
+                            >
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Male">Male</SelectItem>
+                              <SelectItem value="Female">Female</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                              <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {fieldErrors.gender && (
+                            <p className="text-sm text-red-500">{fieldErrors.gender}</p>
+                          )}
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                          <Label htmlFor="address">Address *</Label>
+                          <Textarea
+                            ref={addressRef}
+                            id="address"
+                            rows={2}
+                            value={formData.address}
+                            onChange={(e) => updateField("address", e.target.value)}
+                            placeholder="House no., street, area, city, state"
+                            className={fieldErrors.address ? "border-red-500" : ""}
+                          />
+                          {fieldErrors.address && (
+                            <p className="text-sm text-red-500">{fieldErrors.address}</p>
+                          )}
+                        </div>
+
+                        {/* Map Integration - UPDATED: Now in square shape with box UI */}
+                        <div className="md:col-span-2 space-y-2">
+                          <MapComponent
+                            location={formData.location}
+                            onLocationSelect={handleLocationSelect}
+                          />
+                        </div>
+
+                        {/* Languages */}
+                        <div className="md:col-span-2 space-y-2">
+                          <Label>Languages you know</Label>
+                          <div className="flex flex-wrap gap-2">
+                            {getAllSelectedLanguages().map((lang) => {
+                              const selected = getAllSelectedLanguages().includes(lang);
+
+                              return (
+                                <button
+                                  key={lang}
+                                  type="button"
+                                  onClick={() => {
+                                    let next: string[];
+                                    if (selected) {
+                                      next = getAllSelectedLanguages().filter((l) => l !== lang);
+                                    } else {
+                                      next = [...getAllSelectedLanguages(), lang];
+                                    }
+                                    updateField("languages", next.join(", "));
+                                  }}
+                                  className={`px-3 py-1 rounded-full text-sm border ${selected
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white text-gray-700 border-gray-300"
+                                    }`}
+                                >
+                                  {lang}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          <div className="flex gap-2 mt-2">
+                            <Input
+                              placeholder="Add more languages"
+                              value={customLanguage}
+                              onChange={(e) => setCustomLanguage(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleAddCustomLanguage();
+                                }
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={handleAddCustomLanguage}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                          <Label htmlFor="linkedin">LinkedIn profile link</Label>
+                          <Input
+                            id="linkedin"
+                            value={formData.linkedin}
+                            onChange={(e) => updateField("linkedin", e.target.value)}
+                            placeholder="https://www.linkedin.com/in/username"
+                            className={fieldErrors.linkedin ? "border-red-500" : ""}
+                            type="url"
+                          />
+                          {fieldErrors.linkedin && (
+                            <p className="text-sm text-red-500">{fieldErrors.linkedin}</p>
+                          )}
+                          {formData.linkedin && !fieldErrors.linkedin && (
+                            <p className="text-xs text-green-600">✓ Valid LinkedIn URL</p>
+                          )}
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                          <Label htmlFor="careerObjective">Career objective</Label>
+                          <Textarea
+                            id="careerObjective"
+                            rows={3}
+                            value={formData.careerObjective}
+                            onChange={(e) => updateField("careerObjective", e.target.value)}
+                            placeholder="Briefly describe your career objective."
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
