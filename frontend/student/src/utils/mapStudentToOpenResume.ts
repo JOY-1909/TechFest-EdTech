@@ -21,13 +21,7 @@ export const mapStudentToOpenResume = (studentProfile: any) => {
     const projects = get(['projects', 'personalProjects', 'personal_projects'], []);
     const portfolio = get(['portfolio'], []);
     const accomplishments = get(['accomplishments'], []);
-    const location = get(['location_query', 'address', 'location'], "");
-
-    // Handle location object if it's from the form
-    const locationString = typeof location === 'object' && location?.address ? location.address : location;
-
-    // Map Trainings (Helper removed, direct mapping in return)
-    // Map Portfolio (Helper removed, direct mapping in return)
+    // const location = get(['location_query', 'address', 'location'], "");
 
     // Map Accomplishments to Custom Descriptions
     const accomplishmentDescriptions = accomplishments.map((a: any) => {
@@ -36,6 +30,37 @@ export const mapStudentToOpenResume = (studentProfile: any) => {
         const parts = [title, descText].filter(Boolean);
         return parts.join(" - ");
     });
+
+    // Merge Projects, Trainings, and Portfolio into Open Resume's "projects" section
+    const mergedProjects = [
+        ...projects.map((proj: any) => ({
+            project: proj.title || "",
+            date: proj.duration || "",
+            descriptions: [
+                proj.role ? `Role: ${proj.role}` : "",
+                proj.link || proj.url || proj.projectLink || proj.project_link || proj.githubLink || proj.github_link ? `Link: ${proj.link || proj.url || proj.projectLink || proj.project_link || proj.githubLink || proj.github_link}` : "",
+                proj.technologies || proj.techStack || proj.tech_stack ? `Tech Stack: ${proj.technologies || proj.techStack || proj.tech_stack}` : "",
+                (proj.description || "")
+            ].flat().join("\n").split("\n").filter(Boolean),
+        })),
+        ...trainings.map((t: any) => ({
+            project: t.title || "Training",
+            date: t.duration || "",
+            descriptions: [
+                t.provider ? `Provider: ${t.provider}` : "",
+                t.credentialLink ? `Credential: ${t.credentialLink}` : "",
+                (t.description || "")
+            ].flat().join("\n").split("\n").filter(Boolean),
+        })),
+        ...portfolio.map((p: any) => ({
+            project: p.title || p.name || "Portfolio Item",
+            date: "",
+            descriptions: [
+                p.link || p.projectUrl || p.project_url || p.url || p.projectLink || p.project_link ? `Link: ${p.link || p.projectUrl || p.project_url || p.url || p.projectLink || p.project_link}` : "",
+                p.description || p.desc || p.summary || p.details || "",
+            ].flat().join("\n").split("\n").filter(Boolean),
+        }))
+    ];
 
     return {
         profile: {
@@ -53,7 +78,7 @@ export const mapStudentToOpenResume = (studentProfile: any) => {
                 return githubItem ? (githubItem.link || githubItem.url || githubItem.projectUrl) : get(['github', 'github_url'], "");
             })(),
             summary: get(['career_objective', 'careerObjective'], ""),
-            headline: "PROFESSIONAL SUMMARY", // Hardcoded per request for a summary headline
+            headline: "PROFESSIONAL SUMMARY",
             location: "", // Suppressed per request
         },
         workExperiences: experience.map((exp: any) => ({
@@ -75,33 +100,7 @@ export const mapStudentToOpenResume = (studentProfile: any) => {
                 edu.location || edu.city ? `Location: ${edu.location || edu.city}` : ""
             ].filter(Boolean),
         })),
-        projects: projects.map((proj: any) => ({
-            project: proj.title || "",
-            date: proj.duration || "",
-            descriptions: [
-                proj.role ? `Role: ${proj.role}` : "",
-                proj.link || proj.url || proj.projectLink || proj.project_link || proj.githubLink || proj.github_link ? `Link: ${proj.link || proj.url || proj.projectLink || proj.project_link || proj.githubLink || proj.github_link}` : "",
-                proj.technologies || proj.techStack || proj.tech_stack ? `Tech Stack: ${proj.technologies || proj.techStack || proj.tech_stack}` : "",
-                (proj.description || "")
-            ].flat().join("\n").split("\n").filter(Boolean),
-        })),
-        trainings: trainings.map((t: any) => ({
-            school: t.title || "Training", // Title is bolded (mapped to school)
-            degree: t.provider || "",      // Provider is secondary
-            date: t.duration || "",
-            gpa: "",
-            descriptions: [
-                t.description || "",
-            ].filter(Boolean),
-        })),
-        portfolio: portfolio.map((p: any) => ({
-            project: p.title || p.name || "",
-            date: "",
-            descriptions: [
-                p.link || p.projectUrl || p.project_url || p.url || p.projectLink || p.project_link ? `Link: ${p.link || p.projectUrl || p.project_url || p.url || p.projectLink || p.project_link}` : "",
-                p.description || p.desc || p.summary || p.details || "",
-            ].filter(Boolean),
-        })),
+        projects: mergedProjects,
         skills: {
             featuredSkills: skills.map((skill: any) => ({
                 skill: skill.name || "",

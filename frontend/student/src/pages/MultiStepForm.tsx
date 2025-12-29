@@ -568,6 +568,7 @@ export default function MultiStepForm() {
   const customSkillLevelRef = useRef<HTMLButtonElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   const [customLanguage, setCustomLanguage] = useState("");
   const [customSkill, setCustomSkill] = useState("");
   const [customSkillLevel, setCustomSkillLevel] = useState("");
@@ -577,10 +578,17 @@ export default function MultiStepForm() {
 
   // Handler for when resume is successfully parsed (first-time signup only)
   const handleResumeParseSuccess = (parsedResume: ParsedResume) => {
+    console.log("Parsed resume data received:", parsedResume);
     const parsedData = mapParsedResumeToFormData(parsedResume);
-    // For first-time signup, fill empty fields only
-    const mergedData = mergeResumeDataWithFormData(formData, parsedData, false);
-    setFormData({ ...mergedData });
+    console.log("Mapped form data:", parsedData);
+
+    // Use functional update to avoid stale closure issues
+    setFormData(prev => {
+      // For first-time signup, fill empty fields only
+      const mergedData = mergeResumeDataWithFormData(prev, parsedData, false);
+      console.log("Newly merged form data:", mergedData);
+      return { ...mergedData };
+    });
 
     toast({
       title: "Resume data applied! ✅",
@@ -632,8 +640,8 @@ export default function MultiStepForm() {
 
     const resumeData = mapStudentToOpenResume(data);
     iframeRef.current.contentWindow.postMessage({
-      type: 'UPDATE_RESUME',
-      payload: resumeData,
+      type: 'OPEN_RESUME_UPDATE',
+      data: resumeData,
       settings: {
         formToShow: {
           workExperiences: true,
@@ -641,8 +649,6 @@ export default function MultiStepForm() {
           projects: true,
           skills: true,
           custom: true,
-          trainings: true,
-          portfolio: false, // Hidden per user request
         },
         formToHeading: {
           workExperiences: "WORK EXPERIENCE",
@@ -650,8 +656,6 @@ export default function MultiStepForm() {
           skills: "SKILLS",
           custom: "ACCOMPLISHMENTS",
           projects: "ACADEMICS / PERSONAL PROJECTS",
-          trainings: "TRAININGS, COURSES & PROJECTS",
-          portfolio: "PORTFOLIO",
         },
         // Heuristic: reduce font size if many sections are present
         // Heuristic: granular font scaling for single-page optimization
@@ -659,21 +663,18 @@ export default function MultiStepForm() {
           const itemCount =
             (resumeData.workExperiences?.length || 0) +
             (resumeData.educations?.length || 0) +
-            (resumeData.projects?.length || 0) +
-            (resumeData.trainings?.length || 0);
+            (resumeData.projects?.length || 0);
 
           if (itemCount > 10) return "9";
           if (itemCount > 6) return "10";
           return "11";
         })(),
-        formsOrder: ["educations", "workExperiences", "trainings", "projects", "skills", "portfolio", "custom"],
+        formsOrder: ["educations", "workExperiences", "projects", "skills", "custom"],
         showBulletPoints: {
           educations: true,
           projects: true,
           skills: true,
           custom: true,
-          trainings: true,
-          portfolio: true,
         }
       }
     }, '*');
@@ -1385,15 +1386,15 @@ export default function MultiStepForm() {
           toast({
             title: "Success! 🎉",
             description: isEditMode
-              ? "Profile updated and resume downloaded! Redirecting to dashboard..."
-              : "Profile saved and resume downloaded! Redirecting to dashboard...",
+              ? "Profile updated and resume downloaded!"
+              : "Profile saved and resume downloaded!",
           });
         } else {
           toast({
             title: isEditMode ? "Profile Updated (PDF Failed)" : "Profile Saved (PDF Failed)",
             description: isEditMode
-              ? "Your profile was updated but resume generation failed. Redirecting to dashboard..."
-              : "Your profile was saved but resume generation failed. Redirecting to dashboard...",
+              ? "Your profile was updated but resume generation failed."
+              : "Your profile was saved but resume generation failed.",
             variant: "default",
           });
         }
@@ -1402,9 +1403,8 @@ export default function MultiStepForm() {
         // This will trigger a refresh when dashboard loads
         localStorage.setItem("profileUpdated", "true");
 
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
+        // Show the recommendation section instead of immediate navigation
+        setShowRecommendation(true);
       } else {
         const errorText = await response.text();
         console.error("Profile save error:", errorText);
@@ -1438,1110 +1438,1162 @@ export default function MultiStepForm() {
                 {isEditMode ? "Edit Your Profile" : "Complete your profile"}
               </CardTitle>
               <CardDescription>
-                {isEditMode
-                  ? "Update your profile information to keep it current."
-                  : "Tell us about yourself so we can match you with the best internships."}
+                {showRecommendation
+                  ? "Your profile is ready! Check out these recommended jobs based on your skills."
+                  : isEditMode
+                    ? "Update your profile information to keep it current."
+                    : "Tell us about yourself so we can match you with the best internships."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Loading indicator when fetching profile */}
-              {isLoadingProfile && (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
-                  <span className="text-gray-600">Loading your profile data...</span>
-                </div>
-              )}
-
-              {/* Progress */}
-              {!isLoadingProfile && (
-                <div>
-                  <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
-                    <span>Step {currentStep} of {totalSteps}</span>
-                    <span>{Math.round(progressPercentage)}%</span>
-                  </div>
-                  <Progress value={progressPercentage} className="h-2" />
-                </div>
-              )}
-
-              {/* Step titles */}
-              {!isLoadingProfile && (
-                <>
-                  <div className="space-y-1">
-                    <p className="text-lg font-semibold">
-                      {currentStep === 1 && "Personal details"}
-                      {currentStep === 2 && "Education"}
-                      {currentStep === 3 && "Work experience"}
-                      {currentStep === 4 && "Trainings, courses & projects"}
-                      {currentStep === 5 && "Skills & portfolio"}
-                      {currentStep === 6 && "Accomplishments & review"}
+              {/* Recommendation Section */}
+              {showRecommendation ? (
+                <div className="space-y-6 py-4">
+                  <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 text-center space-y-4">
+                    <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Download className="text-white w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">Resume Downloaded!</h3>
+                    <p className="text-gray-600 max-w-md mx-auto">
+                      Your professional resume has been generated. Now, let's find the perfect job matches for your skills.
                     </p>
-                    <p className="text-sm text-gray-600">
-                      {currentStep === 1 && "Basic information to build your profile."}
-                      {currentStep === 2 && "Add your academic history (multiple entries allowed)."}
-                      {currentStep === 3 && "Include internships you have done."}
-                      {currentStep === 4 && "Highlight trainings, courses and academic / personal projects."}
-                      {currentStep === 5 && "Showcase your skills and work samples."}
-                      {currentStep === 6 && "Add accomplishments and finish your profile."}
-                    </p>
-                  </div>
 
-                  {/* reCAPTCHA Container - kept but not used for OTP here */}
-                  <div id="recaptcha-container"></div>
-                </>
-              )}
-
-              {/* Form Steps - Only show when profile is loaded */}
-              {!isLoadingProfile && (
-                <>
-                  {/* STEP 1: PERSONAL DETAILS */}
-                  {currentStep === 1 && (
-                    <div className="space-y-6">
-                      {/* Resume Upload Section - shown in autofill or edit mode */}
-                      {showResumeUpload && (
-                        <div className="mb-6">
-                          <ResumeUploadButton
-                            onParseSuccess={handleResumeParseSuccess}
-                            variant={isAutofillMode ? "default" : "compact"}
-                          />
-                        </div>
-                      )}
-
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="firstName">First name *</Label>
-                          <Input
-                            ref={firstNameRef}
-                            id="firstName"
-                            value={formData.firstName}
-                            onChange={(e) => updateField("firstName", e.target.value)}
-                            placeholder="Enter first name"
-                            className={fieldErrors.firstName ? "border-red-500" : ""}
-                          />
-                          {fieldErrors.firstName && (
-                            <p className="text-sm text-red-500">{fieldErrors.firstName}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lastName">Last name</Label>
-                          <Input
-                            ref={lastNameRef}
-                            id="lastName"
-                            value={formData.lastName}
-                            onChange={(e) => updateField("lastName", e.target.value)}
-                            placeholder="Enter last name"
-                          />
-                        </div>
-
-                        {/* Phone number - WITHOUT OTP verification */}
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="phone">Phone number *</Label>
-                          <div className="flex flex-col gap-2">
-                            <div className="flex gap-2">
-                              <Input
-                                ref={phoneRef}
-                                id="phone"
-                                value={formData.phone}
-                                onChange={(e) => handlePhoneInput(e.target.value)}
-                                placeholder="10-digit mobile number"
-                                maxLength={10}
-                                className={fieldErrors.phone ? "border-red-500" : ""}
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                              />
-                            </div>
-                            {fieldErrors.phone && (
-                              <p className="text-sm text-red-500">{fieldErrors.phone}</p>
-                            )}
-                            <p className="text-xs text-gray-500">
-                              Enter your 10-digit phone number (digits only).
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="dob">Date of birth *</Label>
-                          <Input
-                            ref={dobRef}
-                            id="dob"
-                            type="date"
-                            value={formData.dateOfBirth}
-                            onChange={(e) => handleDOBInput(e.target.value)}
-                            className={fieldErrors.dateOfBirth ? "border-red-500" : ""}
-                            min="2000-01-01"
-                            max="2005-12-31"
-                          />
-                          {fieldErrors.dateOfBirth && (
-                            <p className="text-sm text-red-500">{fieldErrors.dateOfBirth}</p>
-                          )}
-                          {formData.dateOfBirth && !fieldErrors.dateOfBirth && (
-                            <p className="text-xs text-green-600">
-                              Age: {calculateAge(formData.dateOfBirth)} years
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label>Gender *</Label>
-                          <Select
-                            value={formData.gender}
-                            onValueChange={(value) => updateField("gender", value)}
-                          >
-                            <SelectTrigger
-                              ref={genderRef}
-                              className={fieldErrors.gender ? "border-red-500" : ""}
-                            >
-                              <SelectValue placeholder="Select gender" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Male">Male</SelectItem>
-                              <SelectItem value="Female">Female</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                              <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {fieldErrors.gender && (
-                            <p className="text-sm text-red-500">{fieldErrors.gender}</p>
-                          )}
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                          <Label htmlFor="address">Address *</Label>
-                          <Textarea
-                            ref={addressRef}
-                            id="address"
-                            rows={2}
-                            value={formData.address}
-                            onChange={(e) => updateField("address", e.target.value)}
-                            placeholder="House no., street, area, city, state"
-                            className={fieldErrors.address ? "border-red-500" : ""}
-                          />
-                          {fieldErrors.address && (
-                            <p className="text-sm text-red-500">{fieldErrors.address}</p>
-                          )}
-                        </div>
-
-                        {/* Map Integration - UPDATED: Now in square shape with box UI */}
-                        <div className="md:col-span-2 space-y-2">
-                          <MapComponent
-                            location={formData.location}
-                            onLocationSelect={handleLocationSelect}
-                          />
-                        </div>
-
-                        {/* Languages */}
-                        <div className="md:col-span-2 space-y-2">
-                          <Label>Languages you know</Label>
-                          <div className="flex flex-wrap gap-2">
-                            {getAllSelectedLanguages().map((lang) => {
-                              const selected = getAllSelectedLanguages().includes(lang);
-
-                              return (
-                                <button
-                                  key={lang}
-                                  type="button"
-                                  onClick={() => {
-                                    let next: string[];
-                                    if (selected) {
-                                      next = getAllSelectedLanguages().filter((l) => l !== lang);
-                                    } else {
-                                      next = [...getAllSelectedLanguages(), lang];
-                                    }
-                                    updateField("languages", next.join(", "));
-                                  }}
-                                  className={`px-3 py-1 rounded-full text-sm border ${selected
-                                    ? "bg-blue-600 text-white border-blue-600"
-                                    : "bg-white text-gray-700 border-gray-300"
-                                    }`}
-                                >
-                                  {lang}
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                          <div className="flex gap-2 mt-2">
-                            <Input
-                              placeholder="Add more languages"
-                              value={customLanguage}
-                              onChange={(e) => setCustomLanguage(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleAddCustomLanguage();
-                                }
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={handleAddCustomLanguage}
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                          <Label htmlFor="linkedin">LinkedIn profile link</Label>
-                          <Input
-                            id="linkedin"
-                            value={formData.linkedin}
-                            onChange={(e) => updateField("linkedin", e.target.value)}
-                            placeholder="https://www.linkedin.com/in/username"
-                            className={fieldErrors.linkedin ? "border-red-500" : ""}
-                            type="url"
-                          />
-                          {fieldErrors.linkedin && (
-                            <p className="text-sm text-red-500">{fieldErrors.linkedin}</p>
-                          )}
-                          {formData.linkedin && !fieldErrors.linkedin && (
-                            <p className="text-xs text-green-600">✓ Valid LinkedIn URL</p>
-                          )}
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                          <Label htmlFor="careerObjective">Career objective</Label>
-                          <Textarea
-                            id="careerObjective"
-                            rows={3}
-                            value={formData.careerObjective}
-                            onChange={(e) => updateField("careerObjective", e.target.value)}
-                            placeholder="Briefly describe your career objective."
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ---------- STEP 2: EDUCATION ---------- */}
-                  {currentStep === 2 && (
-                    <div className="space-y-4">
-                      {formData.education.map((item) => (
-                        <div
-                          key={item.id}
-                          id={`education-${item.id}`}
-                          className="border rounded-md p-4 space-y-3 bg-gray-50"
-                        >
-                          <div className="flex justify-between items-center">
-                            <p className="font-medium text-sm">Education {item.id}</p>
-                            {formData.education.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeListItem("education", item.id)}
-                              >
-                                Remove
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {/* Institution – plain text */}
-                            <div className="space-y-1 md:col-span-2">
-                              <Label>Institution *</Label>
-                              <Input
-                                data-field="institution"
-                                value={item.institution}
-                                onChange={(e) =>
-                                  handleInstitutionInput(e.target.value, item.id)
-                                }
-                                placeholder="College / school name"
-                                className={fieldErrors[`education-${item.id}-institution`] ? "border-red-500" : ""}
-                              />
-                              {fieldErrors[`education-${item.id}-institution`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-institution`]}</p>
-                              )}
-                            </div>
-
-                            {/* Degree / course – plain text */}
-                            <div className="space-y-1">
-                              <Label>Degree / course *</Label>
-                              <Input
-                                data-field="degree"
-                                value={item.degree}
-                                onChange={(e) =>
-                                  handleDegreeInput(e.target.value, item.id)
-                                }
-                                placeholder="e.g., B.Tech, B.Com, Class XII"
-                                className={fieldErrors[`education-${item.id}-degree`] ? "border-red-500" : ""}
-                              />
-                              {fieldErrors[`education-${item.id}-degree`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-degree`]}</p>
-                              )}
-                            </div>
-
-                            {/* Field of study – plain text */}
-                            <div className="space-y-1">
-                              <Label>Field of study</Label>
-                              <Input
-                                data-field="fieldOfStudy"
-                                value={item.fieldOfStudy}
-                                onChange={(e) =>
-                                  handleFieldOfStudyInput(e.target.value, item.id)
-                                }
-                                placeholder="e.g., Computer Science"
-                                className={fieldErrors[`education-${item.id}-fieldOfStudy`] ? "border-red-500" : ""}
-                              />
-                              {fieldErrors[`education-${item.id}-fieldOfStudy`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-fieldOfStudy`]}</p>
-                              )}
-                            </div>
-
-                            {/* Score */}
-                            <div className="space-y-1">
-                              <Label>Score / CGPA</Label>
-                              <Input
-                                data-field="score"
-                                value={item.score}
-                                onChange={(e) =>
-                                  handleScoreInput(e.target.value, item.id)
-                                }
-                                placeholder="e.g., 8.5 CGPA / 85%"
-                                className={fieldErrors[`education-${item.id}-score`] ? "border-red-500" : ""}
-                                inputMode="decimal"
-                              />
-                              {fieldErrors[`education-${item.id}-score`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-score`]}</p>
-                              )}
-                            </div>
-
-                            {/* Start year */}
-                            <div className="space-y-1">
-                              <Label>Start year *</Label>
-                              <Select
-                                value={item.startYear}
-                                onValueChange={(value) =>
-                                  updateListItem<EducationItem>(
-                                    "education",
-                                    item.id,
-                                    { startYear: value }
-                                  )
-                                }
-                              >
-                                <SelectTrigger
-                                  data-field="startYear"
-                                  className={fieldErrors[`education-${item.id}-startYear`] ? "border-red-500" : ""}
-                                >
-                                  <SelectValue placeholder="Select year" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {yearOptions.map((year) => (
-                                    <SelectItem key={year} value={year}>
-                                      {year}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              {fieldErrors[`education-${item.id}-startYear`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-startYear`]}</p>
-                              )}
-                            </div>
-
-                            {/* End year */}
-                            <div className="space-y-1">
-                              <Label>End year *</Label>
-                              <Select
-                                value={item.endYear}
-                                onValueChange={(value) =>
-                                  updateListItem<EducationItem>(
-                                    "education",
-                                    item.id,
-                                    { endYear: value }
-                                  )
-                                }
-                              >
-                                <SelectTrigger
-                                  data-field="endYear"
-                                  className={fieldErrors[`education-${item.id}-endYear`] ? "border-red-500" : ""}
-                                >
-                                  <SelectValue placeholder="Select year" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {yearOptions.map((year) => (
-                                    <SelectItem key={year} value={year}>
-                                      {year}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              {fieldErrors[`education-${item.id}-endYear`] && (
-                                <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-endYear`]}</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <Button type="button" variant="outline" onClick={addEducation}>
-                        + Add education
-                      </Button>
-                    </div>
-                  )}
-
-                  {/* ---------- STEP 3: WORK EXPERIENCE ---------- */}
-                  {currentStep === 3 && (
-                    <div className="space-y-4">
-                      {formData.experience.map((item) => (
-                        <div
-                          key={item.id}
-                          className="border rounded-md p-4 space-y-3 bg-gray-50"
-                        >
-                          <div className="flex justify-between items-center">
-                            <p className="font-medium text-sm">
-                              Internship {item.id}
-                            </p>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeListItem("experience", item.id)}
-                            >
-                              Remove
-                            </Button>
-                          </div>
-
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {/* Company – plain text */}
-                            <div className="space-y-1">
-                              <Label>Company / organization *</Label>
-                              <Input
-                                value={item.company}
-                                onChange={(e) =>
-                                  updateListItem<ExperienceItem>(
-                                    "experience",
-                                    item.id,
-                                    { company: e.target.value }
-                                  )
-                                }
-                                placeholder="Company name"
-                              />
-                            </div>
-
-                            {/* Role – plain text */}
-                            <div className="space-y-1">
-                              <Label>Role / designation *</Label>
-                              <Input
-                                value={item.role}
-                                onChange={(e) =>
-                                  updateListItem<ExperienceItem>(
-                                    "experience",
-                                    item.id,
-                                    { role: e.target.value }
-                                  )
-                                }
-                                placeholder="e.g., Web Development Intern"
-                              />
-                            </div>
-
-                            <div className="space-y-1">
-                              <Label>Start year *</Label>
-                              <Select
-                                value={item.startDate}
-                                onValueChange={(value) =>
-                                  updateListItem<ExperienceItem>(
-                                    "experience",
-                                    item.id,
-                                    { startDate: value }
-                                  )
-                                }
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select start year" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {experienceYearOptions.map((year) => (
-                                    <SelectItem key={year} value={year}>
-                                      {year}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            <div className="space-y-1">
-                              <Label>End year *</Label>
-                              <Select
-                                value={item.endDate}
-                                onValueChange={(value) =>
-                                  updateListItem<ExperienceItem>(
-                                    "experience",
-                                    item.id,
-                                    { endDate: value }
-                                  )
-                                }
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select end year" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {experienceYearOptions.map((year) => (
-                                    <SelectItem key={year} value={year}>
-                                      {year}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            <div className="md:col-span-2 space-y-1">
-                              <Label>Description</Label>
-                              <Textarea
-                                rows={3}
-                                value={item.description}
-                                onChange={(e) =>
-                                  updateListItem<ExperienceItem>(
-                                    "experience",
-                                    item.id,
-                                    { description: e.target.value }
-                                  )
-                                }
-                                placeholder="Describe your responsibilities, technologies used, achievements, etc."
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <Button type="button" variant="outline" onClick={addExperience}>
-                        + Add internship
-                      </Button>
-
-                      {formData.experience.length === 0 && (
-                        <p className="text-xs text-gray-500">
-                          You can skip this step if you do not have any internships yet.
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* ---------- STEP 4: TRAININGS & PROJECTS ---------- */}
-                  {currentStep === 4 && (
-                    <div className="space-y-6">
-                      {/* Trainings / courses */}
-                      <div className="space-y-3">
-                        <p className="font-semibold text-sm">
-                          Trainings / courses
-                        </p>
-                        {formData.trainings.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border rounded-md p-4 space-y-3 bg-gray-50"
-                          >
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium text-xs">
-                                Training / course {item.id}
-                              </p>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeListItem("trainings", item.id)}
-                              >
-                                Remove
-                              </Button>
-                            </div>
-                            <div className="grid gap-3 md:grid-cols-2">
-                              <div className="space-y-1">
-                                <Label>Title *</Label>
-                                <Input
-                                  value={item.title}
-                                  onChange={(e) =>
-                                    updateListItem<TrainingItem>(
-                                      "trainings",
-                                      item.id,
-                                      { title: e.target.value }
-                                    )
-                                  }
-                                  placeholder="e.g., Web Development Bootcamp"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Provider *</Label>
-                                <Input
-                                  value={item.provider}
-                                  onChange={(e) =>
-                                    updateListItem<TrainingItem>(
-                                      "trainings",
-                                      item.id,
-                                      { provider: e.target.value }
-                                    )
-                                  }
-                                  placeholder="e.g., Coursera, Udemy"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Duration</Label>
-                                <Input
-                                  value={item.duration}
-                                  onChange={(e) =>
-                                    updateListItem<TrainingItem>(
-                                      "trainings",
-                                      item.id,
-                                      { duration: e.target.value }
-                                    )
-                                  }
-                                  placeholder="e.g., 6 weeks"
-                                />
-                              </div>
-                              <div className="md:col-span-2 space-y-1">
-                                <Label>Description</Label>
-                                <Textarea
-                                  rows={2}
-                                  value={item.description}
-                                  onChange={(e) =>
-                                    updateListItem<TrainingItem>(
-                                      "trainings",
-                                      item.id,
-                                      { description: e.target.value }
-                                    )
-                                  }
-                                  placeholder="What did you learn or build?"
-                                />
-                              </div>
-                              {/* Credential link removed per user request */}
-                            </div>
-                          </div>
+                    <div className="pt-4 space-y-3">
+                      <div className="flex flex-wrap justify-center gap-2 mb-4">
+                        {formData.skills.slice(0, 5).map(skill => (
+                          <span key={skill.id} className="bg-white px-3 py-1 rounded-full text-xs font-medium text-blue-600 border border-blue-200">
+                            {skill.name}
+                          </span>
                         ))}
-
-                        <Button type="button" variant="outline" onClick={addTraining}>
-                          + Add training / course
-                        </Button>
                       </div>
 
-                      {/* Projects */}
-                      <div className="space-y-3">
-                        <p className="font-semibold text-sm">
-                          Academics / personal projects
+                      <Button
+                        size="lg"
+                        className="bg-green-600 hover:bg-green-700 text-white w-full max-w-sm gap-2"
+                        onClick={() => window.open('http://localhost:5000/recommend', '_blank')}
+                      >
+                        🚀 View Job Recommendations
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        className="w-full max-w-sm"
+                        onClick={() => navigate("/dashboard")}
+                      >
+                        Go to Dashboard
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border border-dashed rounded-lg bg-gray-50 text-center">
+                    <p className="text-sm text-gray-500 italic">
+                      "Our NLP engine analyzes your skills to find the best-matched job opportunities in real-time."
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Loading indicator when fetching profile */}
+                  {isLoadingProfile && (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
+                      <span className="text-gray-600">Loading your profile data...</span>
+                    </div>
+                  )}
+
+                  {/* Progress */}
+                  {!isLoadingProfile && (
+                    <div>
+                      <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
+                        <span>Step {currentStep} of {totalSteps}</span>
+                        <span>{Math.round(progressPercentage)}%</span>
+                      </div>
+                      <Progress value={progressPercentage} className="h-2" />
+                    </div>
+                  )}
+
+                  {/* Step titles */}
+                  {!isLoadingProfile && (
+                    <>
+                      <div className="space-y-1">
+                        <p className="text-lg font-semibold">
+                          {currentStep === 1 && "Personal details"}
+                          {currentStep === 2 && "Education"}
+                          {currentStep === 3 && "Work experience"}
+                          {currentStep === 4 && "Trainings, courses & projects"}
+                          {currentStep === 5 && "Skills & portfolio"}
+                          {currentStep === 6 && "Accomplishments & review"}
                         </p>
-                        {formData.projects.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border rounded-md p-4 space-y-3 bg-gray-50"
-                          >
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium text-xs">
-                                Project {item.id}
-                              </p>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeListItem("projects", item.id)}
-                              >
-                                Remove
-                              </Button>
+                        <p className="text-sm text-gray-600">
+                          {currentStep === 1 && "Basic information to build your profile."}
+                          {currentStep === 2 && "Add your academic history (multiple entries allowed)."}
+                          {currentStep === 3 && "Include internships you have done."}
+                          {currentStep === 4 && "Highlight trainings, courses and academic / personal projects."}
+                          {currentStep === 5 && "Showcase your skills and work samples."}
+                          {currentStep === 6 && "Add accomplishments and finish your profile."}
+                        </p>
+                      </div>
+
+                      {/* reCAPTCHA Container - kept but not used for OTP here */}
+                      <div id="recaptcha-container"></div>
+                    </>
+                  )}
+
+                  {/* Form Steps - Only show when profile is loaded */}
+                  {!isLoadingProfile && (
+                    <>
+                      {/* STEP 1: PERSONAL DETAILS */}
+                      {currentStep === 1 && (
+                        <div className="space-y-6">
+                          {/* Resume Upload Section - shown in autofill or edit mode */}
+                          {showResumeUpload && (
+                            <div className="mb-6">
+                              <ResumeUploadButton
+                                onParseSuccess={handleResumeParseSuccess}
+                                variant={isAutofillMode ? "default" : "compact"}
+                              />
+                            </div>
+                          )}
+
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <Label htmlFor="firstName">First name *</Label>
+                              <Input
+                                ref={firstNameRef}
+                                id="firstName"
+                                value={formData.firstName}
+                                onChange={(e) => updateField("firstName", e.target.value)}
+                                placeholder="Enter first name"
+                                className={fieldErrors.firstName ? "border-red-500" : ""}
+                              />
+                              {fieldErrors.firstName && (
+                                <p className="text-sm text-red-500">{fieldErrors.firstName}</p>
+                              )}
                             </div>
                             <div className="space-y-2">
-                              <div className="space-y-1">
-                                <Label>Title *</Label>
-                                <Input
-                                  value={item.title}
-                                  onChange={(e) =>
-                                    updateListItem<ProjectItem>("projects", item.id, {
-                                      title: e.target.value,
-                                    })
-                                  }
-                                  placeholder="Project title"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Your role</Label>
-                                <Input
-                                  value={item.role}
-                                  onChange={(e) =>
-                                    updateListItem<ProjectItem>("projects", item.id, {
-                                      role: e.target.value,
-                                    })
-                                  }
-                                  placeholder="e.g., Backend developer"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Technologies used</Label>
-                                <Input
-                                  value={item.technologies}
-                                  onChange={(e) =>
-                                    updateListItem<ProjectItem>("projects", item.id, {
-                                      technologies: e.target.value,
-                                    })
-                                  }
-                                  placeholder="e.g., React, Node.js, MongoDB"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Description</Label>
-                                <Textarea
-                                  rows={3}
-                                  value={item.description}
-                                  onChange={(e) =>
-                                    updateListItem<ProjectItem>("projects", item.id, {
-                                      description: e.target.value,
-                                    })
-                                  }
-                                  placeholder="What was the project about? What did you build or achieve?"
-                                />
+                              <Label htmlFor="lastName">Last name</Label>
+                              <Input
+                                ref={lastNameRef}
+                                id="lastName"
+                                value={formData.lastName}
+                                onChange={(e) => updateField("lastName", e.target.value)}
+                                placeholder="Enter last name"
+                              />
+                            </div>
+
+                            {/* Phone number - WITHOUT OTP verification */}
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="phone">Phone number *</Label>
+                              <div className="flex flex-col gap-2">
+                                <div className="flex gap-2">
+                                  <Input
+                                    ref={phoneRef}
+                                    id="phone"
+                                    value={formData.phone}
+                                    onChange={(e) => handlePhoneInput(e.target.value)}
+                                    placeholder="10-digit mobile number"
+                                    maxLength={10}
+                                    className={fieldErrors.phone ? "border-red-500" : ""}
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                  />
+                                </div>
+                                {fieldErrors.phone && (
+                                  <p className="text-sm text-red-500">{fieldErrors.phone}</p>
+                                )}
+                                <p className="text-xs text-gray-500">
+                                  Enter your 10-digit phone number (digits only).
+                                </p>
                               </div>
                             </div>
-                          </div>
-                        ))}
 
-                        <Button type="button" variant="outline" onClick={addProject}>
-                          + Add academic / personal project
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                            <div className="space-y-2">
+                              <Label htmlFor="dob">Date of birth *</Label>
+                              <Input
+                                ref={dobRef}
+                                id="dob"
+                                type="date"
+                                value={formData.dateOfBirth}
+                                onChange={(e) => handleDOBInput(e.target.value)}
+                                className={fieldErrors.dateOfBirth ? "border-red-500" : ""}
+                                min="2000-01-01"
+                                max="2005-12-31"
+                              />
+                              {fieldErrors.dateOfBirth && (
+                                <p className="text-sm text-red-500">{fieldErrors.dateOfBirth}</p>
+                              )}
+                              {formData.dateOfBirth && !fieldErrors.dateOfBirth && (
+                                <p className="text-xs text-green-600">
+                                  Age: {calculateAge(formData.dateOfBirth)} years
+                                </p>
+                              )}
+                            </div>
 
-                  {/* ---------- STEP 5: SKILLS & PORTFOLIO ---------- */}
-                  {currentStep === 5 && (
-                    <div className="space-y-6">
-                      {/* Skills */}
-                      <div className="space-y-3">
-                        <p className="font-semibold text-sm">Skills</p>
-
-                        {/* Tickbox-style chips */}
-                        <div className="flex flex-wrap gap-2">
-                          {defaultSkills.map((skill) => {
-                            const existing = formData.skills.find(
-                              (s) => s.name.toLowerCase() === skill.toLowerCase()
-                            );
-                            const selected = !!existing;
-
-                            return (
-                              <button
-                                key={skill}
-                                type="button"
-                                onClick={() => {
-                                  if (selected) {
-                                    // remove
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      skills: prev.skills.filter(
-                                        (s) =>
-                                          s.name.toLowerCase() !==
-                                          skill.toLowerCase()
-                                      ),
-                                    }));
-                                  } else {
-                                    // add with default level
-                                    addSkill(skill, "Intermediate");
-                                  }
-                                }}
-                                className={`px-3 py-1 rounded-full text-sm border ${selected
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : "bg-white text-gray-700 border-gray-300"
-                                  }`}
+                            <div className="space-y-2">
+                              <Label>Gender *</Label>
+                              <Select
+                                value={formData.gender}
+                                onValueChange={(value) => updateField("gender", value)}
                               >
-                                {skill}
-                              </button>
-                            );
-                          })}
-                        </div>
+                                <SelectTrigger
+                                  ref={genderRef}
+                                  className={fieldErrors.gender ? "border-red-500" : ""}
+                                >
+                                  <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Male">Male</SelectItem>
+                                  <SelectItem value="Female">Female</SelectItem>
+                                  <SelectItem value="Other">Other</SelectItem>
+                                  <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              {fieldErrors.gender && (
+                                <p className="text-sm text-red-500">{fieldErrors.gender}</p>
+                              )}
+                            </div>
 
-                        {/* Add more skill + proficiency */}
-                        <div className="grid gap-2 md:grid-cols-3 mt-3">
-                          <div className="space-y-1 md:col-span-2">
-                            <Label>Add more skill</Label>
-                            <Input
-                              ref={customSkillRef}
-                              placeholder="e.g., Next.js, Figma"
-                              value={customSkill}
-                              onChange={(e) => setCustomSkill(e.target.value)}
-                            />
-                          </div>
-                          {/* Proficiency dropdown removed */}
-                        </div>
+                            <div className="md:col-span-2 space-y-2">
+                              <Label htmlFor="address">Address *</Label>
+                              <Textarea
+                                ref={addressRef}
+                                id="address"
+                                rows={2}
+                                value={formData.address}
+                                onChange={(e) => updateField("address", e.target.value)}
+                                placeholder="House no., street, area, city, state"
+                                className={fieldErrors.address ? "border-red-500" : ""}
+                              />
+                              {fieldErrors.address && (
+                                <p className="text-sm text-red-500">{fieldErrors.address}</p>
+                              )}
+                            </div>
 
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="mt-2"
-                          onClick={() => {
-                            // Validation updated: Proficiency removed
-                            if (!customSkill.trim()) {
-                              toast({
-                                title: "Skill required",
-                                description: "Please enter a skill name.",
-                                variant: "destructive",
-                              });
-                              setFieldErrors(prev => ({
-                                ...prev,
-                                customSkill: "This field is required"
-                              }));
-                              customSkillRef.current?.focus();
-                              return;
-                            }
+                            {/* Map Integration - UPDATED: Now in square shape with box UI */}
+                            <div className="md:col-span-2 space-y-2">
+                              <MapComponent
+                                location={formData.location}
+                                onLocationSelect={handleLocationSelect}
+                              />
+                            </div>
 
-                            addSkill(customSkill.trim(), "Intermediate"); // Defaulting to simple addition
-                            setCustomSkill("");
-                            setCustomSkillLevel("");
-                            // Clear custom skill errors
-                            setFieldErrors(prev => {
-                              const newErrors = { ...prev };
-                              delete newErrors.customSkill;
-                              delete newErrors.customSkillLevel;
-                              return newErrors;
-                            });
-                          }}
-                        >
-                          + Add skill
-                        </Button>
+                            {/* Languages */}
+                            <div className="md:col-span-2 space-y-2">
+                              <Label>Languages you know</Label>
+                              <div className="flex flex-wrap gap-2">
+                                {getAllSelectedLanguages().map((lang) => {
+                                  const selected = getAllSelectedLanguages().includes(lang);
 
-                        {/* Editable list of skills - UPDATED with proper validation styling */}
-                        {formData.skills.length > 0 && (
-                          <div className="space-y-2 mt-4">
-                            {formData.skills.map((item) => (
-                              <div
-                                key={item.id}
-                                id={`skill-${item.id}`}
-                                className="border rounded-md p-3 flex flex-col md:flex-row gap-3 bg-gray-50"
-                              >
-                                <div className="flex-1 space-y-1">
-                                  <Label>Skill *</Label>
-                                  <Input
-                                    data-field="name"
-                                    value={item.name}
-                                    onChange={(e) =>
-                                      updateListItem<SkillItem>("skills", item.id, {
-                                        name: e.target.value,
-                                      })
+                                  return (
+                                    <button
+                                      key={lang}
+                                      type="button"
+                                      onClick={() => {
+                                        let next: string[];
+                                        if (selected) {
+                                          next = getAllSelectedLanguages().filter((l) => l !== lang);
+                                        } else {
+                                          next = [...getAllSelectedLanguages(), lang];
+                                        }
+                                        updateField("languages", next.join(", "));
+                                      }}
+                                      className={`px-3 py-1 rounded-full text-sm border ${selected
+                                        ? "bg-blue-600 text-white border-blue-600"
+                                        : "bg-white text-gray-700 border-gray-300"
+                                        }`}
+                                    >
+                                      {lang}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="flex gap-2 mt-2">
+                                <Input
+                                  placeholder="Add more languages"
+                                  value={customLanguage}
+                                  onChange={(e) => setCustomLanguage(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      handleAddCustomLanguage();
                                     }
-                                    placeholder="Skill name"
-                                    className={fieldErrors[`skills-${item.id}-name`] ? "border-red-500" : ""}
-                                  />
-                                  {fieldErrors[`skills-${item.id}-name`] && (
-                                    <p className="text-sm text-red-500">{fieldErrors[`skills-${item.id}-name`]}</p>
-                                  )}
-                                </div>
-                                {/* Proficiency removed per user request */}
-                                <div className="flex items-end">
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={handleAddCustomLanguage}
+                                >
+                                  Add
+                                </Button>
+                              </div>
+                            </div>
+
+                            <div className="md:col-span-2 space-y-2">
+                              <Label htmlFor="linkedin">LinkedIn profile link</Label>
+                              <Input
+                                id="linkedin"
+                                value={formData.linkedin}
+                                onChange={(e) => updateField("linkedin", e.target.value)}
+                                placeholder="https://www.linkedin.com/in/username"
+                                className={fieldErrors.linkedin ? "border-red-500" : ""}
+                                type="url"
+                              />
+                              {fieldErrors.linkedin && (
+                                <p className="text-sm text-red-500">{fieldErrors.linkedin}</p>
+                              )}
+                              {formData.linkedin && !fieldErrors.linkedin && (
+                                <p className="text-xs text-green-600">✓ Valid LinkedIn URL</p>
+                              )}
+                            </div>
+
+                            <div className="md:col-span-2 space-y-2">
+                              <Label htmlFor="careerObjective">Career objective</Label>
+                              <Textarea
+                                id="careerObjective"
+                                rows={3}
+                                value={formData.careerObjective}
+                                onChange={(e) => updateField("careerObjective", e.target.value)}
+                                placeholder="Briefly describe your career objective."
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ---------- STEP 2: EDUCATION ---------- */}
+                      {currentStep === 2 && (
+                        <div className="space-y-4">
+                          {formData.education.map((item) => (
+                            <div
+                              key={item.id}
+                              id={`education-${item.id}`}
+                              className="border rounded-md p-4 space-y-3 bg-gray-50"
+                            >
+                              <div className="flex justify-between items-center">
+                                <p className="font-medium text-sm">Education {item.id}</p>
+                                {formData.education.length > 1 && (
                                   <Button
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => removeListItem("skills", item.id)}
+                                    onClick={() => removeListItem("education", item.id)}
+                                  >
+                                    Remove
+                                  </Button>
+                                )}
+                              </div>
+
+                              <div className="grid gap-3 md:grid-cols-2">
+                                {/* Institution – plain text */}
+                                <div className="space-y-1 md:col-span-2">
+                                  <Label>Institution *</Label>
+                                  <Input
+                                    data-field="institution"
+                                    value={item.institution}
+                                    onChange={(e) =>
+                                      handleInstitutionInput(e.target.value, item.id)
+                                    }
+                                    placeholder="College / school name"
+                                    className={fieldErrors[`education-${item.id}-institution`] ? "border-red-500" : ""}
+                                  />
+                                  {fieldErrors[`education-${item.id}-institution`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-institution`]}</p>
+                                  )}
+                                </div>
+
+                                {/* Degree / course – plain text */}
+                                <div className="space-y-1">
+                                  <Label>Degree / course *</Label>
+                                  <Input
+                                    data-field="degree"
+                                    value={item.degree}
+                                    onChange={(e) =>
+                                      handleDegreeInput(e.target.value, item.id)
+                                    }
+                                    placeholder="e.g., B.Tech, B.Com, Class XII"
+                                    className={fieldErrors[`education-${item.id}-degree`] ? "border-red-500" : ""}
+                                  />
+                                  {fieldErrors[`education-${item.id}-degree`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-degree`]}</p>
+                                  )}
+                                </div>
+
+                                {/* Field of study – plain text */}
+                                <div className="space-y-1">
+                                  <Label>Field of study</Label>
+                                  <Input
+                                    data-field="fieldOfStudy"
+                                    value={item.fieldOfStudy}
+                                    onChange={(e) =>
+                                      handleFieldOfStudyInput(e.target.value, item.id)
+                                    }
+                                    placeholder="e.g., Computer Science"
+                                    className={fieldErrors[`education-${item.id}-fieldOfStudy`] ? "border-red-500" : ""}
+                                  />
+                                  {fieldErrors[`education-${item.id}-fieldOfStudy`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-fieldOfStudy`]}</p>
+                                  )}
+                                </div>
+
+                                {/* Score */}
+                                <div className="space-y-1">
+                                  <Label>Score / CGPA</Label>
+                                  <Input
+                                    data-field="score"
+                                    value={item.score}
+                                    onChange={(e) =>
+                                      handleScoreInput(e.target.value, item.id)
+                                    }
+                                    placeholder="e.g., 8.5 CGPA / 85%"
+                                    className={fieldErrors[`education-${item.id}-score`] ? "border-red-500" : ""}
+                                    inputMode="decimal"
+                                  />
+                                  {fieldErrors[`education-${item.id}-score`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-score`]}</p>
+                                  )}
+                                </div>
+
+                                {/* Start year */}
+                                <div className="space-y-1">
+                                  <Label>Start year *</Label>
+                                  <Select
+                                    value={item.startYear}
+                                    onValueChange={(value) =>
+                                      updateListItem<EducationItem>(
+                                        "education",
+                                        item.id,
+                                        { startYear: value }
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger
+                                      data-field="startYear"
+                                      className={fieldErrors[`education-${item.id}-startYear`] ? "border-red-500" : ""}
+                                    >
+                                      <SelectValue placeholder="Select year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {yearOptions.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  {fieldErrors[`education-${item.id}-startYear`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-startYear`]}</p>
+                                  )}
+                                </div>
+
+                                {/* End year */}
+                                <div className="space-y-1">
+                                  <Label>End year *</Label>
+                                  <Select
+                                    value={item.endYear}
+                                    onValueChange={(value) =>
+                                      updateListItem<EducationItem>(
+                                        "education",
+                                        item.id,
+                                        { endYear: value }
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger
+                                      data-field="endYear"
+                                      className={fieldErrors[`education-${item.id}-endYear`] ? "border-red-500" : ""}
+                                    >
+                                      <SelectValue placeholder="Select year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {yearOptions.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  {fieldErrors[`education-${item.id}-endYear`] && (
+                                    <p className="text-sm text-red-500">{fieldErrors[`education-${item.id}-endYear`]}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+
+                          <Button type="button" variant="outline" onClick={addEducation}>
+                            + Add education
+                          </Button>
+                        </div>
+                      )}
+
+                      {/* ---------- STEP 3: WORK EXPERIENCE ---------- */}
+                      {currentStep === 3 && (
+                        <div className="space-y-4">
+                          {formData.experience.map((item) => (
+                            <div
+                              key={item.id}
+                              className="border rounded-md p-4 space-y-3 bg-gray-50"
+                            >
+                              <div className="flex justify-between items-center">
+                                <p className="font-medium text-sm">
+                                  Internship {item.id}
+                                </p>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeListItem("experience", item.id)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+
+                              <div className="grid gap-3 md:grid-cols-2">
+                                {/* Company – plain text */}
+                                <div className="space-y-1">
+                                  <Label>Company / organization *</Label>
+                                  <Input
+                                    value={item.company}
+                                    onChange={(e) =>
+                                      updateListItem<ExperienceItem>(
+                                        "experience",
+                                        item.id,
+                                        { company: e.target.value }
+                                      )
+                                    }
+                                    placeholder="Company name"
+                                  />
+                                </div>
+
+                                {/* Role – plain text */}
+                                <div className="space-y-1">
+                                  <Label>Role / designation *</Label>
+                                  <Input
+                                    value={item.role}
+                                    onChange={(e) =>
+                                      updateListItem<ExperienceItem>(
+                                        "experience",
+                                        item.id,
+                                        { role: e.target.value }
+                                      )
+                                    }
+                                    placeholder="e.g., Web Development Intern"
+                                  />
+                                </div>
+
+                                <div className="space-y-1">
+                                  <Label>Start year *</Label>
+                                  <Select
+                                    value={item.startDate}
+                                    onValueChange={(value) =>
+                                      updateListItem<ExperienceItem>(
+                                        "experience",
+                                        item.id,
+                                        { startDate: value }
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select start year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {experienceYearOptions.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <div className="space-y-1">
+                                  <Label>End year *</Label>
+                                  <Select
+                                    value={item.endDate}
+                                    onValueChange={(value) =>
+                                      updateListItem<ExperienceItem>(
+                                        "experience",
+                                        item.id,
+                                        { endDate: value }
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select end year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {experienceYearOptions.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <div className="md:col-span-2 space-y-1">
+                                  <Label>Description</Label>
+                                  <Textarea
+                                    rows={3}
+                                    value={item.description}
+                                    onChange={(e) =>
+                                      updateListItem<ExperienceItem>(
+                                        "experience",
+                                        item.id,
+                                        { description: e.target.value }
+                                      )
+                                    }
+                                    placeholder="Describe your responsibilities, technologies used, achievements, etc."
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+
+                          <Button type="button" variant="outline" onClick={addExperience}>
+                            + Add internship
+                          </Button>
+
+                          {formData.experience.length === 0 && (
+                            <p className="text-xs text-gray-500">
+                              You can skip this step if you do not have any internships yet.
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {/* ---------- STEP 4: TRAININGS & PROJECTS ---------- */}
+                      {currentStep === 4 && (
+                        <div className="space-y-6">
+                          {/* Trainings / courses */}
+                          <div className="space-y-3">
+                            <p className="font-semibold text-sm">
+                              Trainings / courses
+                            </p>
+                            {formData.trainings.map((item) => (
+                              <div
+                                key={item.id}
+                                className="border rounded-md p-4 space-y-3 bg-gray-50"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <p className="font-medium text-xs">
+                                    Training / course {item.id}
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeListItem("trainings", item.id)}
                                   >
                                     Remove
                                   </Button>
                                 </div>
+                                <div className="grid gap-3 md:grid-cols-2">
+                                  <div className="space-y-1">
+                                    <Label>Title *</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) =>
+                                        updateListItem<TrainingItem>(
+                                          "trainings",
+                                          item.id,
+                                          { title: e.target.value }
+                                        )
+                                      }
+                                      placeholder="e.g., Web Development Bootcamp"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Provider *</Label>
+                                    <Input
+                                      value={item.provider}
+                                      onChange={(e) =>
+                                        updateListItem<TrainingItem>(
+                                          "trainings",
+                                          item.id,
+                                          { provider: e.target.value }
+                                        )
+                                      }
+                                      placeholder="e.g., Coursera, Udemy"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Duration</Label>
+                                    <Input
+                                      value={item.duration}
+                                      onChange={(e) =>
+                                        updateListItem<TrainingItem>(
+                                          "trainings",
+                                          item.id,
+                                          { duration: e.target.value }
+                                        )
+                                      }
+                                      placeholder="e.g., 6 weeks"
+                                    />
+                                  </div>
+                                  <div className="md:col-span-2 space-y-1">
+                                    <Label>Description</Label>
+                                    <Textarea
+                                      rows={2}
+                                      value={item.description}
+                                      onChange={(e) =>
+                                        updateListItem<TrainingItem>(
+                                          "trainings",
+                                          item.id,
+                                          { description: e.target.value }
+                                        )
+                                      }
+                                      placeholder="What did you learn or build?"
+                                    />
+                                  </div>
+                                  {/* Credential link removed per user request */}
+                                </div>
                               </div>
                             ))}
-                          </div>
-                        )}
-                      </div>
 
-                      {/* Portfolio / work samples */}
-                      <div className="space-y-3">
-                        <p className="font-semibold text-sm">
-                          Portfolio / work samples
-                        </p>
-                        {formData.portfolio.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border rounded-md p-4 space-y-3 bg-gray-50"
-                          >
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium text-xs">
-                                Work sample {item.id}
-                              </p>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeListItem("portfolio", item.id)}
-                              >
-                                Remove
-                              </Button>
-                            </div>
-                            <div className="space-y-2">
-                              <div className="space-y-1">
-                                <Label>Title</Label>
-                                <Input
-                                  value={item.title}
-                                  onChange={(e) =>
-                                    updateListItem<PortfolioItem>(
-                                      "portfolio",
-                                      item.id,
-                                      { title: e.target.value }
-                                    )
-                                  }
-                                  placeholder="e.g., Portfolio website, GitHub repo"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Link</Label>
-                                <Input
-                                  value={item.link}
-                                  onChange={(e) =>
-                                    updateListItem<PortfolioItem>(
-                                      "portfolio",
-                                      item.id,
-                                      { link: e.target.value }
-                                    )
-                                  }
-                                  placeholder="URL to your work sample"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Description</Label>
-                                <Textarea
-                                  rows={2}
-                                  value={item.description}
-                                  onChange={(e) =>
-                                    updateListItem<PortfolioItem>(
-                                      "portfolio",
-                                      item.id,
-                                      { description: e.target.value }
-                                    )
-                                  }
-                                  placeholder="Short description of this work sample."
-                                />
-                              </div>
-                            </div>
+                            <Button type="button" variant="outline" onClick={addTraining}>
+                              + Add training / course
+                            </Button>
                           </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={addPortfolio}
-                        >
-                          + Add portfolio / work sample
-                        </Button>
-                      </div>
-                    </div>
+
+                          {/* Projects */}
+                          <div className="space-y-3">
+                            <p className="font-semibold text-sm">
+                              Academics / personal projects
+                            </p>
+                            {formData.projects.map((item) => (
+                              <div
+                                key={item.id}
+                                className="border rounded-md p-4 space-y-3 bg-gray-50"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <p className="font-medium text-xs">
+                                    Project {item.id}
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeListItem("projects", item.id)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="space-y-1">
+                                    <Label>Title *</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) =>
+                                        updateListItem<ProjectItem>("projects", item.id, {
+                                          title: e.target.value,
+                                        })
+                                      }
+                                      placeholder="Project title"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Your role</Label>
+                                    <Input
+                                      value={item.role}
+                                      onChange={(e) =>
+                                        updateListItem<ProjectItem>("projects", item.id, {
+                                          role: e.target.value,
+                                        })
+                                      }
+                                      placeholder="e.g., Backend developer"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Technologies used</Label>
+                                    <Input
+                                      value={item.technologies}
+                                      onChange={(e) =>
+                                        updateListItem<ProjectItem>("projects", item.id, {
+                                          technologies: e.target.value,
+                                        })
+                                      }
+                                      placeholder="e.g., React, Node.js, MongoDB"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Description</Label>
+                                    <Textarea
+                                      rows={3}
+                                      value={item.description}
+                                      onChange={(e) =>
+                                        updateListItem<ProjectItem>("projects", item.id, {
+                                          description: e.target.value,
+                                        })
+                                      }
+                                      placeholder="What was the project about? What did you build or achieve?"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+
+                            <Button type="button" variant="outline" onClick={addProject}>
+                              + Add academic / personal project
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ---------- STEP 5: SKILLS & PORTFOLIO ---------- */}
+                      {currentStep === 5 && (
+                        <div className="space-y-6">
+                          {/* Skills */}
+                          <div className="space-y-3">
+                            <p className="font-semibold text-sm">Skills</p>
+
+                            {/* Tickbox-style chips */}
+                            <div className="flex flex-wrap gap-2">
+                              {defaultSkills.map((skill) => {
+                                const existing = formData.skills.find(
+                                  (s) => s.name.toLowerCase() === skill.toLowerCase()
+                                );
+                                const selected = !!existing;
+
+                                return (
+                                  <button
+                                    key={skill}
+                                    type="button"
+                                    onClick={() => {
+                                      if (selected) {
+                                        // remove
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          skills: prev.skills.filter(
+                                            (s) =>
+                                              s.name.toLowerCase() !==
+                                              skill.toLowerCase()
+                                          ),
+                                        }));
+                                      } else {
+                                        // add with default level
+                                        addSkill(skill, "Intermediate");
+                                      }
+                                    }}
+                                    className={`px-3 py-1 rounded-full text-sm border ${selected
+                                      ? "bg-blue-600 text-white border-blue-600"
+                                      : "bg-white text-gray-700 border-gray-300"
+                                      }`}
+                                  >
+                                    {skill}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Add more skill + proficiency */}
+                            <div className="grid gap-2 md:grid-cols-3 mt-3">
+                              <div className="space-y-1 md:col-span-2">
+                                <Label>Add more skill</Label>
+                                <Input
+                                  ref={customSkillRef}
+                                  placeholder="e.g., Next.js, Figma"
+                                  value={customSkill}
+                                  onChange={(e) => setCustomSkill(e.target.value)}
+                                />
+                              </div>
+                              {/* Proficiency dropdown removed */}
+                            </div>
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="mt-2"
+                              onClick={() => {
+                                // Validation updated: Proficiency removed
+                                if (!customSkill.trim()) {
+                                  toast({
+                                    title: "Skill required",
+                                    description: "Please enter a skill name.",
+                                    variant: "destructive",
+                                  });
+                                  setFieldErrors(prev => ({
+                                    ...prev,
+                                    customSkill: "This field is required"
+                                  }));
+                                  customSkillRef.current?.focus();
+                                  return;
+                                }
+
+                                addSkill(customSkill.trim(), "Intermediate"); // Defaulting to simple addition
+                                setCustomSkill("");
+                                setCustomSkillLevel("");
+                                // Clear custom skill errors
+                                setFieldErrors(prev => {
+                                  const newErrors = { ...prev };
+                                  delete newErrors.customSkill;
+                                  delete newErrors.customSkillLevel;
+                                  return newErrors;
+                                });
+                              }}
+                            >
+                              + Add skill
+                            </Button>
+
+                            {/* Editable list of skills - UPDATED with proper validation styling */}
+                            {formData.skills.length > 0 && (
+                              <div className="space-y-2 mt-4">
+                                {formData.skills.map((item) => (
+                                  <div
+                                    key={item.id}
+                                    id={`skill-${item.id}`}
+                                    className="border rounded-md p-3 flex flex-col md:flex-row gap-3 bg-gray-50"
+                                  >
+                                    <div className="flex-1 space-y-1">
+                                      <Label>Skill *</Label>
+                                      <Input
+                                        data-field="name"
+                                        value={item.name}
+                                        onChange={(e) =>
+                                          updateListItem<SkillItem>("skills", item.id, {
+                                            name: e.target.value,
+                                          })
+                                        }
+                                        placeholder="Skill name"
+                                        className={fieldErrors[`skills-${item.id}-name`] ? "border-red-500" : ""}
+                                      />
+                                      {fieldErrors[`skills-${item.id}-name`] && (
+                                        <p className="text-sm text-red-500">{fieldErrors[`skills-${item.id}-name`]}</p>
+                                      )}
+                                    </div>
+                                    {/* Proficiency removed per user request */}
+                                    <div className="flex items-end">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => removeListItem("skills", item.id)}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Portfolio / work samples */}
+                          <div className="space-y-3">
+                            <p className="font-semibold text-sm">
+                              Portfolio / work samples
+                            </p>
+                            {formData.portfolio.map((item) => (
+                              <div
+                                key={item.id}
+                                className="border rounded-md p-4 space-y-3 bg-gray-50"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <p className="font-medium text-xs">
+                                    Work sample {item.id}
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeListItem("portfolio", item.id)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="space-y-1">
+                                    <Label>Title</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) =>
+                                        updateListItem<PortfolioItem>(
+                                          "portfolio",
+                                          item.id,
+                                          { title: e.target.value }
+                                        )
+                                      }
+                                      placeholder="e.g., Portfolio website, GitHub repo"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Link</Label>
+                                    <Input
+                                      value={item.link}
+                                      onChange={(e) =>
+                                        updateListItem<PortfolioItem>(
+                                          "portfolio",
+                                          item.id,
+                                          { link: e.target.value }
+                                        )
+                                      }
+                                      placeholder="URL to your work sample"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Description</Label>
+                                    <Textarea
+                                      rows={2}
+                                      value={item.description}
+                                      onChange={(e) =>
+                                        updateListItem<PortfolioItem>(
+                                          "portfolio",
+                                          item.id,
+                                          { description: e.target.value }
+                                        )
+                                      }
+                                      placeholder="Short description of this work sample."
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={addPortfolio}
+                            >
+                              + Add portfolio / work sample
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ---------- STEP 6: ACCOMPLISHMENTS ---------- */}
+                      {currentStep === 6 && (
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <p className="font-semibold text-sm">
+                              Accomplishments / additional details
+                            </p>
+                            {formData.accomplishments.map((item) => (
+                              <div
+                                key={item.id}
+                                className="border rounded-md p-4 space-y-3 bg-gray-50"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <p className="font-medium text-xs">
+                                    Entry {item.id}
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      removeListItem("accomplishments", item.id)
+                                    }
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="space-y-1">
+                                    <Label>Title</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) =>
+                                        updateListItem<AccomplishmentItem>(
+                                          "accomplishments",
+                                          item.id,
+                                          { title: e.target.value }
+                                        )
+                                      }
+                                      placeholder="e.g., Hackathon winner, Scholarship"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label>Description / additional detail</Label>
+                                    <Textarea
+                                      rows={3}
+                                      value={item.description}
+                                      onChange={(e) =>
+                                        updateListItem<AccomplishmentItem>(
+                                          "accomplishments",
+                                          item.id,
+                                          { description: e.target.value }
+                                        )
+                                      }
+                                      placeholder="Explain what you achieved or any additional information about you."
+                                    />
+                                  </div>
+                                  {/* Credential link removed per user request */}
+                                </div>
+                              </div>
+                            ))}
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={addAccomplishment}
+                            >
+                              + Add accomplishment / additional detail
+                            </Button>
+                          </div>
+
+
+
+                          <p className="text-xs text-gray-500">
+                            After you click "{isEditMode ? "Update Profile" : "Find Internships"}", your profile will be {isEditMode ? "updated" : "saved"}
+                            and a professional resume PDF will be automatically downloaded.
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
 
-                  {/* ---------- STEP 6: ACCOMPLISHMENTS ---------- */}
-                  {currentStep === 6 && (
-                    <div className="space-y-6">
-                      <div className="space-y-3">
-                        <p className="font-semibold text-sm">
-                          Accomplishments / additional details
-                        </p>
-                        {formData.accomplishments.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border rounded-md p-4 space-y-3 bg-gray-50"
-                          >
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium text-xs">
-                                Entry {item.id}
-                              </p>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  removeListItem("accomplishments", item.id)
-                                }
-                              >
-                                Remove
-                              </Button>
-                            </div>
-                            <div className="space-y-2">
-                              <div className="space-y-1">
-                                <Label>Title</Label>
-                                <Input
-                                  value={item.title}
-                                  onChange={(e) =>
-                                    updateListItem<AccomplishmentItem>(
-                                      "accomplishments",
-                                      item.id,
-                                      { title: e.target.value }
-                                    )
-                                  }
-                                  placeholder="e.g., Hackathon winner, Scholarship"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label>Description / additional detail</Label>
-                                <Textarea
-                                  rows={3}
-                                  value={item.description}
-                                  onChange={(e) =>
-                                    updateListItem<AccomplishmentItem>(
-                                      "accomplishments",
-                                      item.id,
-                                      { description: e.target.value }
-                                    )
-                                  }
-                                  placeholder="Explain what you achieved or any additional information about you."
-                                />
-                              </div>
-                              {/* Credential link removed per user request */}
-                            </div>
-                          </div>
-                        ))}
+                  {/* Navigation Buttons */}
+                  {!isLoadingProfile && !showRecommendation && (
 
+                    <div className="flex justify-between pt-4 border-t">
+                      {/* Home button for Step 1, Previous button for other steps */}
+                      {currentStep === 1 ? (
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={addAccomplishment}
+                          onClick={() => navigate("/")}
                         >
-                          + Add accomplishment / additional detail
+                          <Home className="w-4 h-4 mr-1" />
+                          Home
                         </Button>
-                      </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handlePrevious}
+                        >
+                          <ArrowLeft className="w-4 h-4 mr-1" />
+                          Previous
+                        </Button>
+                      )}
 
-
-
-                      <p className="text-xs text-gray-500">
-                        After you click "{isEditMode ? "Update Profile" : "Find Internships"}", your profile will be {isEditMode ? "updated" : "saved"}
-                        and a professional resume PDF will be automatically downloaded.
-                      </p>
+                      {currentStep < totalSteps ? (
+                        <Button type="button" onClick={handleNext}>
+                          Next
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          onClick={handleSubmit}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {isEditMode ? "Updating..." : "Saving..."}
+                            </>
+                          ) : (
+                            <>
+                              {isEditMode ? "Update Profile" : "Find Internships"} & Download Resume
+                              <Download className="w-4 h-4 ml-1" />
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   )}
                 </>
-              )}
-
-              {/* Navigation Buttons */}
-              {!isLoadingProfile && (
-                <div className="flex justify-between pt-4 border-t">
-                  {/* Home button for Step 1, Previous button for other steps */}
-                  {currentStep === 1 ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => navigate("/")}
-                    >
-                      <Home className="w-4 h-4 mr-1" />
-                      Home
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handlePrevious}
-                    >
-                      <ArrowLeft className="w-4 h-4 mr-1" />
-                      Previous
-                    </Button>
-                  )}
-
-                  {currentStep < totalSteps ? (
-                    <Button type="button" onClick={handleNext}>
-                      Next
-                      <ArrowRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      onClick={handleSubmit}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          {isEditMode ? "Updating..." : "Saving..."}
-                        </>
-                      ) : (
-                        <>
-                          {isEditMode ? "Update Profile" : "Find Internships"} & Download Resume
-                          <Download className="w-4 h-4 ml-1" />
-                        </>
-                      )}
-                    </Button>
-                  )}
-                </div>
               )}
             </CardContent>
           </Card>

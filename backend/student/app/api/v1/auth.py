@@ -37,6 +37,8 @@ from app.schemas.totp import (
 )
 import secrets
 import logging
+import json
+import os
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = logging.getLogger(__name__)
@@ -652,6 +654,21 @@ async def complete_profile(
         
         await current_user.save()
         
+        # Cache skills for NLP engine
+        try:
+            skills_names = [skill.name for skill in current_user.skills]
+            # Use the absolute path provided by the user workspace information
+            nlp_cache_dir = r"c:\Users\user\Downloads\NLP-Job-Recommendation-main\TechFest-EdTech\Job-Recommendation\NLP-Job-Recommendation-main"
+            if os.path.exists(nlp_cache_dir):
+                cache_file = os.path.join(nlp_cache_dir, "user_skills_cache.json")
+                with open(cache_file, "w") as f:
+                    json.dump({"skills": skills_names, "last_updated": datetime.utcnow().isoformat()}, f)
+                logger.info(f"Cached {len(skills_names)} skills for NLP engine at {cache_file}")
+            else:
+                logger.warning(f"NLP engine directory not found: {nlp_cache_dir}")
+        except Exception as e:
+            logger.error(f"Failed to cache skills for NLP engine: {str(e)}")
+            
         logger.info(f"Profile completed successfully for: {current_user.email}")
         
         return MessageResponse(

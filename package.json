@@ -1,12 +1,31 @@
 {
-  "name": "yuvasetu-monorepo",
+  "name": "yuvasetu-platform",
+  "version": "1.0.0",
+  "description": "Complete internship platform connecting students with employers through AI-powered job matching",
   "private": true,
+  "keywords": ["internship", "jobs", "ai", "recommendation", "platform", "students", "employers"],
+  "author": "YuvaSetu Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/yuvasetu-platform.git"
+  },
   "scripts": {
     "dev:fe-emp": "cd frontend/employer && npm run dev",
     "dev:fe-admin": "cd frontend/admin && npm run dev",
     "dev:fe-stu": "cd frontend/student && npm run dev",
-    "dev:be-emp": "cd backend/employer-admin && .\\.venv\\Scripts\\uvicorn app.main:app --reload --port 8000",
+    "dev:be-emp": "cd backend/employer-admin && .\\venv\\Scripts\\uvicorn app.main:app --reload --port 8000",
     "dev:be-stu": "cd backend/student && .\\venv\\Scripts\\uvicorn app.main:app --reload --port 8001",
-    "dev:all": "echo \"Start backends in two terminals: npm run dev:be-emp & npm run dev:be-stu\" && echo \"Then start frontends: npm run dev:fe-emp & npm run dev:fe-admin & npm run dev:fe-stu\""
+    "dev:all": "echo \"Start backends in two terminals: npm run dev:be-emp & npm run dev:be-stu\" && echo \"Then start frontends: npm run dev:fe-emp & npm run dev:fe-admin & npm run dev:fe-stu\"",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend/student && npm install && cd ../employer && npm install && cd ../admin && npm install && cd ../../open-resume && npm install",
+    "install:backend": "echo \"Please run backend installation manually as shown in README.md\"",
+    "build:frontend": "cd frontend/student && npm run build && cd ../employer && npm run build && cd ../admin && npm run build",
+    "test": "echo \"Tests not configured yet\"",
+    "lint": "echo \"Linting not configured yet\""
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

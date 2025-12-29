@@ -2,12 +2,24 @@ Environment files
 .env
 .env.local
 .env.*.local
+.env.production
+.env.development
+**/.env
+**/.env.local
+**/.env.*.local
 
 Firebase Admin SDK credentials
 firebaseadminsdk*.json
 firebase-service-account.json
 backend\yuvasetu-employer-firebase-adminsdk-fbsvc-f7399ddf87.json
 *adminsdk.json
+*firebase-adminsdk*.json
+yuvasetu-*-firebase-adminsdk*.json
+
+Sensitive configuration files
+config/secrets.json
+secrets/
+credentials/
 
 Python
 pycache/
