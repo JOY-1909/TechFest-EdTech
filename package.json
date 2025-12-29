@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/yuvasetu-platform.git"
+    "url": "https://github.com/JOY-1909/TechFest-EdTech.git"
   },
   "scripts": {
     "dev:fe-emp": "cd frontend/employer && npm run dev",

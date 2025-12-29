@@ -2,6 +2,10 @@
 
 **YuvaSetu** is a comprehensive internship platform that connects students with employers through intelligent job matching and seamless application processes.
 
+**🔗 Related Repositories:**
+- **Main Platform**: [TechFest-EdTech](https://github.com/JOY-1909/TechFest-EdTech)
+- **NLP Recommendation Engine**: [NLP_Based_Recommendation_Engine](https://github.com/Aman-Husain-123/NLP_Based_Recommendation_Engine)
+
 ## 🌟 Features
 
 ### For Students
@@ -69,8 +73,14 @@ YuvaSetu/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/yuvasetu-platform.git
-   cd yuvasetu-platform
+   git clone https://github.com/JOY-1909/TechFest-EdTech.git
+   cd TechFest-EdTech
+   ```
+
+2. **Clone the NLP Recommendation Engine** (if not already included)
+   ```bash
+   # If Job-Recommendation folder is empty, clone the recommendation engine
+   git clone https://github.com/Aman-Husain-123/NLP_Based_Recommendation_Engine.git Job-Recommendation/NLP-Job-Recommendation-main
    ```
 
 2. **Install backend dependencies**
@@ -241,6 +251,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+- **NLP Recommendation Engine** - [Aman-Husain-123/NLP_Based_Recommendation_Engine](https://github.com/Aman-Husain-123/NLP_Based_Recommendation_Engine)
 - **OpenResume** - Integrated resume builder
 - **Sentence Transformers** - NLP embeddings
 - **FAISS** - Efficient similarity search

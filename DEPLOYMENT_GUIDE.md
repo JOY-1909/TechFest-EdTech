@@ -4,9 +4,16 @@
 
 ### 1. Repository Setup
 
-1. **Create a new GitHub repository**
+1. **Main Platform Repository**
    ```bash
-   # On GitHub, create a new repository named "yuvasetu-platform"
+   # The main YuvaSetu platform is at:
+   # https://github.com/JOY-1909/TechFest-EdTech
+   ```
+
+2. **NLP Recommendation Engine Repository**
+   ```bash
+   # The recommendation engine is at:
+   # https://github.com/Aman-Husain-123/NLP_Based_Recommendation_Engine
    ```
 
 2. **Initialize and push the code**

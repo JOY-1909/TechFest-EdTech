@@ -26,41 +26,25 @@
 
 ### 1. Create Repository
 ```bash
-# On GitHub.com
-1. Go to https://github.com/new
-2. Repository name: yuvasetu-platform
-3. Description: Complete internship platform connecting students with employers through AI-powered job matching
-4. Set to Public (or Private if preferred)
-5. Initialize with README: No (we have our own)
-6. Add .gitignore: No (we have our own)
-7. Choose a license: MIT
+# Main Platform Repository (already exists):
+# https://github.com/JOY-1909/TechFest-EdTech
+
+# NLP Recommendation Engine Repository (already exists):
+# https://github.com/Aman-Husain-123/NLP_Based_Recommendation_Engine
+
+# Repository is already set up and deployed!
 ```
 
 ### 2. Local Git Setup
 ```bash
-# Initialize git (if not already done)
-git init
+# Repository is already deployed! 
+# Current repository: https://github.com/JOY-1909/TechFest-EdTech
+# Latest commit includes all YuvaSetu Platform features
 
-# Add all files
+# To make additional changes:
 git add .
-
-# Initial commit
-git commit -m "Initial commit: YuvaSetu Platform
-
-- Complete internship platform with student, employer, and admin portals
-- AI-powered job recommendation engine
-- Integrated resume builder
-- Secured all credentials and API keys
-- Added comprehensive documentation and deployment guides"
-
-# Set main branch
-git branch -M main
-
-# Add remote origin
-git remote add origin https://github.com/YOUR_USERNAME/yuvasetu-platform.git
-
-# Push to GitHub
-git push -u origin main
+git commit -m "Your commit message"
+git push origin main
 ```
 
 ### 3. Repository Configuration
